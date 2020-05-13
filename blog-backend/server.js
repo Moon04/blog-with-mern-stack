@@ -1,14 +1,12 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 
 //set express
 
 const app = express();
-
-//set middlewares
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +14,13 @@ app.use(express.json());
 const Port = process.env.Port || 3000;
 console.log("Starting server");
 app.listen(Port, () => console.log(`Server running on port: ${Port}`));
+
+//set routers
+
+app.use('/post', require('./routers/postRouter'));
+
+
+
 
 //set mongoose
 
