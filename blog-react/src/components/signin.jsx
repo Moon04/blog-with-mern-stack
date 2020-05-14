@@ -12,7 +12,7 @@ class Signin extends Component {
                         </div>
                         <div className="d-flex justify-content-center my-3">
                             <h4>
-                                Sign in to Blog or <a href="signup.html" className="color-org">Create an account</a>
+                                Sign in to Blog or <a href="/signup" className="color-org">Create an account</a>
                             </h4>
                         </div>
                         <div className="row d-flex justify-content-center">

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+
 import AuthorSubNav from './aurhorSubNav';
 import AnonymousSubNav from './anonymousSubNav';
 
@@ -10,20 +12,20 @@ class Navbar extends Component {
                 
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                     <div className="container">
-                        <a className="navbar-brand" href="index-anonymous.html">
-                        <img src="../images/logo.png" width={30} height={30} className="d-inline-block align-top" />
-                        </a>
+                        <Link className="navbar-brand" to="/">
+                            <img src="../images/logo.png" width={30} height={30} className="d-inline-block align-top" />
+                        </Link>
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon" />
                         </button>
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <a className="nav-link" href="index-anonymous.html">Home</a>
+                                <NavLink className="nav-link" to="/">Home</NavLink>
                             </li>
                             {this.props.currentUser && 
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Followings' Blogs</a>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" to="/followingsblogs">Followings' Blogs</NavLink>
                                 </li>
                             }
                         </ul>
