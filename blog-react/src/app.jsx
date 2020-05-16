@@ -54,8 +54,18 @@ class App extends React.Component {
                             blogs={this.state.blogs}/>
                     )}/>
 
-                    <Route path="/followings" component={AuthorsList}/>
-                    <Route path="/followers" component={AuthorsList}/>
+                    <Route path="/followings" render={ props => (
+                        <AuthorsList 
+                            {...props}
+                            listType="followings"
+                            authors={this.state.authors}/>
+                    )}/>
+                    <Route path="/followers" render={ props => (
+                        <AuthorsList 
+                            {...props}
+                            listType="followers"
+                            authors={this.state.authors}/>
+                    )}/>
                     <Route path="/notfound" component={NotFound}/>
 
                     <Redirect from="/" to="/home"/>

@@ -18,7 +18,7 @@ const Blog = props => {
                     </div>
                     </div>
                     <div className="col-6 follow-author">
-                    <a href="#" className="btn-follow auther-follow">Follow</a>
+                    <a href="#" className="btn-follow author-follow">Follow</a>
                     </div>
                 </div>
                 <div className="card-body">

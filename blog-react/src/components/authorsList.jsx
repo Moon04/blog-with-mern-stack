@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
+import Navbar from './navbar';
+import AuthorCard from './authorCard';
 
-class AuthorsList extends Component {
-    
-    render() { 
-        return ( 
-            <React.Fragment>
-                Authors List
+const AuthorsList = () => {
+    return ( 
+        <React.Fragment>
+                
+                {/* Navbar */}
+                <Navbar/>
+
+               {/* Authors List Container */}
+                <div className="container-fluid">
+                    <section className="py-5">
+                        <div className="authors-list">
+
+                        {/* List Title */}
+                        <div className="list-title">
+                            Followers
+                        </div>
+
+                        {/* List Body */}
+                        <ul className="list-body pl-0">
+                            {this.props.authors.map(author => <AuthorCard author={author}/>)}
+                        </ul>
+                        </div>
+                    </section>
+                </div>
+
             </React.Fragment>
-         );
-    }
+     );
 }
- 
+
 export default AuthorsList;
