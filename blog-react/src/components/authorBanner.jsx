@@ -5,16 +5,16 @@ const AuthorBanner = props => {
         <React.Fragment>
                 
             <div className="banner">
-                <img src="../images/banner.jpg" className="banner-img" />
+                <img src="/images/banner.jpg" className="banner-img" alt="banner" />
                 <div className="profile-info">
                     <a href="authorprofile">
-                    <img src="../images/avatar.jpg" className="img-thumbnail info-img" />
+                    <img src={props.author.avatar} className="img-thumbnail info-img" alt="author avatar" />
                     </a>
                     <div className="info-body ml-3 py-5">
                     <a href="/authorprofile">
-                        Avatar Aang
+                        {props.author.username}
                     </a>
-                    <h5>Avatar Aang</h5>
+                    <h5>{props.author.fName}{props.author.lName}</h5>
                     </div>
                 </div>
             </div>

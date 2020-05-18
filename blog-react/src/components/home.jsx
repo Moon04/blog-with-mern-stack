@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 
 import Navbar from './navbar';
 import AboutUs from './aboutUs';
-import Pagination from './pagination';
-import Blog from './blog';
 import BlogForm from './blogForm';
+// import Blog from './blog';
+import Pagination from './pagination';
 
 class Home extends Component {
     state = {  }
     render() { 
+        console.log(this.props.authors);
+        console.log(this.props.blogs);
         return ( 
             <React.Fragment>
 
@@ -17,7 +19,7 @@ class Home extends Component {
 
                 {/* Banner */}
                 <div className="banner">
-                    <img src="../images/banner.jpg" className="banner-img" />
+                    <img src="../images/banner.jpg" className="banner-img" alt="banner" />
                 </div>
 
                 {/* Home Container */}
@@ -27,7 +29,11 @@ class Home extends Component {
 
                         {this.props.currentUser !== null?
                             // Blog Form
-                            <BlogForm/>:
+                            <BlogForm
+                                type="Add"
+                                onBlogAdd={this.props.onBlogAdd}
+                                onBlogUpdate={this.props.onBlogUpdate}
+                            />:
                             // About Us
                             <AboutUs/>
                         }
@@ -37,7 +43,13 @@ class Home extends Component {
                         <div className="d-flex align-items-center my-5 flex-column">
 
                             {/* Blog Card */}   
-                            {this.props.blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+                            {/* {this.props.blogs.map(blog => 
+                                <Blog 
+                                    key={blog.id} 
+                                    blog={blog} 
+                                    authors={this.props.authors} 
+                                    currentUser={this.props.currentUser} 
+                            />)} */}
 
                         </div>
                         </div>

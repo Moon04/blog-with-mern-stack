@@ -1,33 +1,35 @@
 import React, { Component } from 'react';
+import Joi from "joi-browser";
+import axios from "axios";
+
 import InputPlaceholder from './inputPlaceholder';
 
 class Signin extends Component {
     state = {
         author: {
           email: "",
-          password: "",
-          isSaved: false
+          password: ""
         },
         errors: {}
       };
 
       schema = {
         email: Joi.string()
-          .min(30)
+          .min(10)
           .required()
           .label("Email"),
         password: Joi.string()
           .required()
           .label("Password")
       };
-    
-    //   //   username = React.createRef();
-    
-      handleSubmit = e => {
+        
+      handleSubmit = async e => {
         e.preventDefault();
+
+        const author = {...this.state.author}
     
         //Validation :
-        const errors = this.validate();
+        const errors = this.validate(); 
     
         if (errors) {
           console.log(errors);
@@ -37,8 +39,25 @@ class Signin extends Component {
     
         //valid
         this.setState({ errors: {} });
+
         //Call backend
-        console.log("Done!");
+        const { data } = await axios.get("http://localhost:3000/authors");
+        await data.forEach(element => {
+          if(element.email === author.email){
+
+            if(element.password === author.password)
+            {
+              this.props.onSignIn(element);
+              //Redirect to Home Page
+              this.props.history.replace("/home");
+              return true;
+            }
+            else{
+              console.log("password");
+            }
+          }
+        });
+
       };
     
       validate = () => {
@@ -83,16 +102,6 @@ class Signin extends Component {
         this.setState({ author, errors });
       };
       
-    
-      handleCheck = e => {
-        //Clone
-        const author = { ...this.state.author };
-        //Edit
-        author.isSaved = !author.isSaved;
-        //Set State
-        this.setState({ author });
-      };
-
 
     render() { 
         return ( 
@@ -100,7 +109,7 @@ class Signin extends Component {
                 <div className="container">
                     <div className="mt-5 pt-5">
                         <div className="d-flex justify-content-center my-3">
-                            <img src="../images/login-logo.png" />
+                            <img src="../images/login-logo.png" alt="logo" />
                         </div>
                         <div className="d-flex justify-content-center my-3">
                             <h4>
@@ -116,7 +125,7 @@ class Signin extends Component {
                                         placeholder="Email"
                                         type="email"
                                         value={this.state.author.email}
-                                        error={this.error.name}
+                                        error={this.state.errors.name}
                                         onChange={this.handleChange}
                                     />
 
@@ -125,7 +134,7 @@ class Signin extends Component {
                                         placeholder="Password"
                                         type="password"
                                         value={this.state.author.password}
-                                        error={this.error.name}
+                                        error={this.state.errors.name}
                                         onChange={this.handleChange}
                                     />
 

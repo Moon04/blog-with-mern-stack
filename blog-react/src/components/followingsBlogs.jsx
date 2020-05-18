@@ -1,5 +1,7 @@
 import React from 'react';
 import Navbar from './navbar';
+// import Blog from './blog';
+import Pagination from './pagination';
 
 const FollowingsBlogs = props => {
     return ( 
@@ -10,7 +12,7 @@ const FollowingsBlogs = props => {
 
            {/* Banner */}
            <div className="banner">
-                <img src="../images/banner.jpg" className="banner-img" />
+                <img src="../images/banner.jpg" className="banner-img" alt="banner" />
             </div>
 
             {/* Home Container */}
@@ -23,7 +25,13 @@ const FollowingsBlogs = props => {
                     <div className="d-flex align-items-center my-5 flex-column">
 
                         {/* Blog Card */}   
-                        {this.props.blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+                        {/* {props.blogs.map(blog => 
+                            <Blog 
+                                key={blog.id} 
+                                blog={blog} 
+                                authors={props.authors} 
+                                currentUser={props.currentUser} 
+                        />)} */}
 
                     </div>
                     </div>
@@ -32,6 +40,7 @@ const FollowingsBlogs = props => {
 
                 {/* pagination */}
                 <Pagination/>
+                
             </div>
 
         </React.Fragment>

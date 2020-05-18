@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Navbar from './navbar';
 import AuthorCard from './authorCard';
 
-const AuthorsList = () => {
+const AuthorsList = props => {
     return ( 
         <React.Fragment>
                 
@@ -21,7 +21,7 @@ const AuthorsList = () => {
 
                         {/* List Body */}
                         <ul className="list-body pl-0">
-                            {this.props.authors.map(author => <AuthorCard author={author}/>)}
+                            {props.authors.map(author => <AuthorCard author={author}/>)}
                         </ul>
                         </div>
                     </section>

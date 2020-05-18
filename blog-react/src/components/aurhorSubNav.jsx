@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-const AuthorSubNav = props => {
+
+class AuthorSubNav extends Component {
+    state = {
+        openDropdown: "none"
+    };
+
+    openDropdown = () =>
+    {
+        this.state.openDropdown === "none"? 
+            this.setState({ openDropdown: "block" })
+            :this.setState({ openDropdown: "none" });
+    };
+
+    render(){
     return ( 
         <React.Fragment>
 
@@ -10,27 +24,27 @@ const AuthorSubNav = props => {
                         <i className="fas fa-search" />
                     </button>
                 </form>
-                <a href="#">
-                    <img src="../images/avatar.jpg" className="profile-img" />
+                <a onClick={this.openDropdown}>
+                    <img src="../images/avatar.jpg" className="profile-img" alt="profile-avatar"/>
                 </a>
-                <ul className="profile-dropdown">
+                <ul className="profile-dropdown" style={{display: this.state.openDropdown}}>
                     <li>
-                    <a href="/myprofile">
+                    <Link to="/myprofile">
                         <i className="fas fa-user mr-2" />
                         My Profile
-                    </a>
+                    </Link>
                     </li>
                     <hr />
                     <li>
-                    <a href="/">
+                    <Link to="/signin">
                         <i className="fas fa-power-off mr-2" />
                         Log Out
-                    </a>
+                    </Link>
                     </li>
                 </ul>
 
         </React.Fragment>
-     );
+     );}
 }
  
 export default AuthorSubNav;

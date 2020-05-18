@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
+import axios from "axios";
+
 import { WithContext as ReactTags } from 'react-tag-input';
 import InputLabel from './inputLabel';
 
+//tags delimiters codes
 const KeyCodes = {
     comma: 188,
     enter: 13,
     SPACE: 32
   };
 
-   
+//delimiters array   
 const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.SPACE];
 
 class BlogForm extends Component {
+
+    //blog form state
     state = { 
         errors: {},
         blog: {
@@ -32,14 +37,16 @@ class BlogForm extends Component {
          ]
      };
 
-     handleTagDelete = (i) => {
+    //delete tag
+    handleTagDelete = (i) => {
         const { blog } = this.state;
         blog.tags = blog.tags.filter((tag, index) => index !== i);
         this.setState({
-         blog
+            blog
         });
     }
- 
+
+    //add tag
     handleTagAddition = (tag) => {
         const { blog } = this.state;
         blog.tags = [...blog.tags, tag]
@@ -48,15 +55,16 @@ class BlogForm extends Component {
         });
     }
 
-    //  async componentDidMount() {
+
+    // async componentDidMount() {
     //     const id = this.props.match.params.id;
     //     if (id !== "add") {
-    //       const { data } = await axios.get("http://localhost:3000/blogs/" + id);
-    //       this.setState({ blog: data });
+    //         const { data } = await axios.get("http://localhost:3000/blogs/" + id);
+    //         this.setState({ blog: data });
     //     }
-    //   }
+    // }
 
-      handleChange = ({ target }) => {
+    handleChange = ({ target }) => {
         //Clone
         const blog = { ...this.state.blog };
         //Edit
@@ -65,36 +73,40 @@ class BlogForm extends Component {
         this.setState({ blog });
 
         console.log(blog.img);
-      };
-    
-    //   handleSubmit = async e => {
-    //     e.preventDefault();
-    //     //Make Object to post
-    //     const blog = { ...this.state.blog };
-    
-    //     delete blog.id;
-    //     blog.tags.split(",");
-    //     if (this.props.match.params.id === "add") {
-    //       //CallBackEnd
-    //       const { data } = await axios.post(
-    //         "http://localhost:3000/blogs",
-    //         product
-    //       );
-    //       //Update State
-    //       this.props.onAdd(data);
-    //     } else {
-    //       //Call BackEnd
-    //       const { data } = await axios.put(
-    //         `http://localhost:3000/blogs/${this.props.match.params.id}`,
-    //         product
-    //       );
-    //       //State
-    //       this.props.onEdit(data);
-    //     }
-    
-    //     //Redirect to Home Page
-    //     this.props.history.replace("/home");
-    //   };
+    };
+
+    handleSubmit = async e => {
+        e.preventDefault();
+        //Make Object to post
+        const blog = { ...this.state.blog };
+
+        const { bb } = await axios.get(
+            "http://localhost:3000/blogs");
+
+        console.log(bb);
+
+        delete blog.id;
+        if (this.props.type === "Add") {
+            //CallBackEnd
+            const { data } = await axios.post(
+            "http://localhost:3000/blogs",
+            blog
+            );
+            //Update State
+            this.props.onAdd(data);
+        } else {
+            //Call BackEnd
+            const { data } = await axios.put(
+            `http://localhost:3000/blogs/${this.props.match.params.id}`,
+            blog
+            );
+            //State
+            this.props.onEdit(data);
+        }
+
+        //Redirect to Home Page
+        this.props.history.replace("/home");
+    };
 
     render() { 
         return ( 
@@ -147,7 +159,7 @@ class BlogForm extends Component {
                                     <label htmlFor="img">Upload Photo</label>
                                     <input type="file" className="form-control-file" id="img" onChange={this.handleChange} />
                                 </div>
-                                <a href="#" className="btn btn-publish">Publish</a>
+                                <button type="submit" className="btn btn-publish">Publish</button>
                             </form>
                         </div>
                         </div>

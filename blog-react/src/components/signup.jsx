@@ -9,7 +9,7 @@ class Signup extends Component {
             username: "",
             email: "",
             password: "",
-            avatar:
+            avatar: ""
         },
         errors: {}
       };
@@ -21,7 +21,7 @@ class Signup extends Component {
                 <div className="container">
                     <div className="pt-5">
                         <div className="d-flex justify-content-center my-3">
-                        <img src="../images/login-logo.png" />
+                        <img src="../images/login-logo.png" alt="logo"/>
                         </div>
                         <div className="d-flex justify-content-center my-3">
                         <h4>
