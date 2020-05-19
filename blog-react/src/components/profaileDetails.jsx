@@ -13,12 +13,14 @@ const ProfileDetails = props => {
                             <h5 className="modal-title" id="exampleModalLabel">
                                 Profile Details
                             </h5>
+                            {/* close profile details modal btn */}
                             <button type="button" className="close" onClick={props.closeDetailsModal}>
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div className="modal-body justify-content-center">
                             <div className="profile-details-modal">
+                                {/* author data */}
                                 <div className="d-flex">
                                     <label className="pr-3">
                                         Username: 
@@ -46,6 +48,7 @@ const ProfileDetails = props => {
                             </div>         
                         </div>
                         <div className="modal-footer">
+                            {/* close profile details modal btn */}
                             <button type="button" className="btn btn-secondary" onClick={props.closeDetailsModal}>
                                 Close
                             </button>

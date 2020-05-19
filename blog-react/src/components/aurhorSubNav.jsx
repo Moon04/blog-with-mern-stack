@@ -8,6 +8,7 @@ class AuthorSubNav extends Component {
         openDropdown: "none"
     };
 
+    //open author profile dropdown function
     openDropdown = () =>
     {
         this.state.openDropdown === "none"? 
@@ -32,7 +33,7 @@ class AuthorSubNav extends Component {
                         <img src={this.props.currentUser.avatar} className="profile-img" alt="profile-avatar"/>
                     </Link>
                     
-                    {/* Author Dropdown */}
+                    {/* Author Profile Dropdown */}
                     <ul className="profile-dropdown" style={{display: this.state.openDropdown}}>
                         <li>
                             <Link to="/myprofile">

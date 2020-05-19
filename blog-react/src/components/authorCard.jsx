@@ -56,12 +56,14 @@ class AuthorCard extends Component {
                     <div className="ml-3">
                         <p>
                             <b>
+                                {/* Follower/Following Username */}
                                 <Link to={"/authorprofile/"+this.props.author.id}>
                                     {this.props.author.username}
                                 </Link>
                             </b>
                         </p>
                         <div>
+                            {/* Follow Btn */}
                             <button type="button" className="btn btn-card-follow" onClick={this.handleFollowBtn}>
                                 {this.state.btnText}
                             </button>

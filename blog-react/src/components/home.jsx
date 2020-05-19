@@ -14,46 +14,49 @@ class Home extends Component {
         formType: null
       };
     
+      //handle blog form type -add/edit- function
       handleFormType = (type) =>{
         if(type === "Add") this.setState({formType: "Add"});
         else if(type !== null) this.setState({formType: type});
         else this.setState({formType: "null"});
       };
     
+      //clode blog form modal
       closeForm = () =>{
         this.setState({formType: null});
       };
 
-    handleBlogDelete = async blog => {
-        //Copy Orignal Data
-        const orignalData = [...this.props.blogs];
-    
-        //State
-        this.props.onBlogDelete(blog);
-    
-        try {
-          //Call BackEnd
-          const { data } = await axios.delete(
-            `http://localhost:3000/blogs/${blog.id}`
-          );
-          console.log(data);
-        } catch (error) {
-          //Print Error
-          if (error.response && error.response.status === 404) {
-            toast("Blog already Deleted");
-          } else {
-            toast("Something went wrong!");
+      //handle blog delete
+      handleBlogDelete = async blog => {
+          //Copy Orignal Data
+          const orignalData = [...this.props.blogs];
+      
+          //State
+          this.props.onBlogDelete(blog);
+      
+          try {
+            //Call BackEnd
+            const { data } = await axios.delete(
+              `http://localhost:3000/blogs/${blog.id}`
+            );
+            console.log(data);
+          } catch (error) {
+            //Print Error
+            if (error.response && error.response.status === 404) {
+              toast("Blog already Deleted");
+            } else {
+              toast("Something went wrong!");
+            }
+            //Restore Data
+            this.props.onRestoreBlogs(orignalData);
           }
-          //Restore Data
-          this.props.onRestoreBlogs(orignalData);
-        }
-      };
+        };
 
     render(){
         return ( 
             <React.Fragment>
 
-                {/* Navbar ==> Loggedin <> Anonymous */}
+                {/* Navbar ==> Loggedin / Anonymous */}
                 <Navbar 
                     currentUser={this.props.currentUser} 
                 />
@@ -110,7 +113,7 @@ class Home extends Component {
                       role="dialog"
                       style={{display: this.state.formType? "flex": "none", justifyContent: "center"}}
                       className={this.state.formType? "modal blog-form-modal":"modal fade"} 
-                      >
+                    >
                         {this.state.formType && 
                           <BlogForm
                             formType={this.state.formType}

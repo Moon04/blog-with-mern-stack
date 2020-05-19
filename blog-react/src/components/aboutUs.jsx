@@ -9,16 +9,17 @@ const AboutUs = props => {
                         <div className="card-body">
                             <h5 className="card-title about-title">ABOUT US</h5>
                             <p className="card-text blog-body">
-                                Some quick example text to build on the card title 
-                                and make up the bulk of the card's content Some quick example text to build on 
-                                the card title and make up the bulk of the card's content.
+                                It's a Blogging website where you can share your blogs with 
+                                other bloggers, you can share different interests like music, art, 
+                                literature, movies or anything else you're interested in.
                             </p>
                             
                             <h5 className="card-title about-title">HOW IT WORKS!</h5>
                             <p className="card-text blog-body">
-                                Some quick example text to build on the card title 
-                                and make up the bulk of the card's content Some quick example text to build on 
-                                the card title and make up the bulk of the card's content.
+                                Now, you only can see latest blogs on the website, 
+                                to be able to create blogs, edit or delete them, 
+                                following other authors you have to create an account 
+                                on the website and it's totally free!
                             </p>
                         </div>
                     </div>

@@ -146,19 +146,24 @@ class BlogForm extends Component {
             <React.Fragment>
                <div className={this.props.modal?"modal-dialog":"modal-dialog d-flex justify-content-center my-5 ml-3 sticky-top" }
                     role="document" style={{width: this.props.modal? "60%": "auto"}}>
+                        {/* blog form */}
                     <form onSubmit={this.handleSubmit} className="w-100">
                         <div className="modal-content">
                             <div className="modal-header">
+                                {/* blog form title */}
                                 <h5 className="modal-title" id="exampleModalLabel">
                                     {this.props.formType === "Add"? "Create New": "Edit"} Blog
                                 </h5>
                                 {this.props.modal && 
+                                    // close blog form modal btn
                                     <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.props.closeForm}>
                                         <span aria-hidden="true">×</span>
                                     </button>
                                 }
                             </div>
                             <div className="modal-body">
+
+                                {/* blog title input */}
                                 <InputLabel
                                     name="title"
                                     label="Title"
@@ -168,6 +173,7 @@ class BlogForm extends Component {
                                     onChange={this.handleChange}
                                 />
                             
+                                {/* blog body input */}
                                 <div className="form-group">
                                     <label htmlFor="body">
                                         Content
@@ -178,6 +184,7 @@ class BlogForm extends Component {
                                     />
                                 </div>
 
+                                {/* blog tags input */}
                                 <div className="form-group">
                                     <label htmlFor="tags">
                                         Tags
@@ -197,6 +204,7 @@ class BlogForm extends Component {
                                         delimiters={delimiters} />
                                 </div>
                                 
+                                {/* blog image input */}
                                 <div className="form-group">
                                     <label htmlFor="img">
                                         Upload Photo
@@ -210,10 +218,12 @@ class BlogForm extends Component {
                             </div>
                             <div className="modal-footer">
                                 {this.props.modal &&
+                                    // close blog form modal btn
                                     <button type="button" className="btn btn-secondary" onClick={this.props.closeForm}>
                                         Close
                                     </button>
                                 }
+                                {/* publish blog btn */}
                                 <button type="submit" className="btn btn-publish" style={{padding:"7px", margin:"0"}}>
                                     Publish
                                 </button>

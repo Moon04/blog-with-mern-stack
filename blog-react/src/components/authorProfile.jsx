@@ -18,16 +18,19 @@ class AuthorProfile extends Component {
     detailsModalStatus: false
   };
 
+  //handle blog form type -add/edit- function
   handleFormType = (type) =>{
     if(type === "Add") this.setState({formType: "Add"});
     else if(type !== null) this.setState({formType: type});
     else this.setState({formType: "null"});
   };
 
+  //close blog form modal
   closeForm = () =>{
     this.setState({formType: null});
   };
 
+  //handele profile details modal status
   handeDetailsModal = () => {
     let status = this.state.detailsModalStatus;
     status = !status;
@@ -35,10 +38,12 @@ class AuthorProfile extends Component {
     console.log(status);
   };
 
+  //close profile details modal
   closeDetailsModal = () =>{
     this.setState({detailsModalStatus: false});
   };
 
+  //handle blog delete function
   handleBlogDelete = async blog => {
       //Copy Orignal Data
       const orignalData = [...this.props.blogs];
@@ -120,14 +125,15 @@ class AuthorProfile extends Component {
                               {/* Blog Card */}
                               {blogs.map(blog => 
                                   <Blog 
-                                      key={blog.id} 
-                                      blog={blog} 
-                                      authors={this.props.authors} 
-                                      currentUser={this.props.currentUser}
-                                      onBlogDelete={this.handleBlogDelete}
-                                      handleFormType={this.handleFormType}
-                                      handleFollowBtn={this.props.handleFollowBtn}
-                              />)}
+                                    key={blog.id} 
+                                    blog={blog} 
+                                    authors={this.props.authors} 
+                                    currentUser={this.props.currentUser}
+                                    onBlogDelete={this.handleBlogDelete}
+                                    handleFormType={this.handleFormType}
+                                    handleFollowBtn={this.props.handleFollowBtn}
+                                  />)
+                              }
                           </div>
                           
                           {/* pagination */}
@@ -136,20 +142,20 @@ class AuthorProfile extends Component {
                       </div>
                                 
                       <div 
-                      tabIndex="-1" 
-                      role="dialog"
-                      style={{display: this.state.formType? "flex": "none", justifyContent: "center"}}
-                      className={this.state.formType? "modal blog-form-modal":"modal fade"} 
+                        tabIndex="-1" 
+                        role="dialog"
+                        style={{display: this.state.formType? "flex": "none", justifyContent: "center"}}
+                        className={this.state.formType? "modal blog-form-modal":"modal fade"} 
                       >
                         {this.state.formType && 
                           <BlogForm
-                          formType={this.state.formType}
-                          modal={true}
-                          closeForm={this.closeForm}
-                          currentUser={this.props.currentUser}
-                          onBlogAdd={this.props.onBlogAdd}
-                          onBlogUpdate={this.props.onBlogUpdate}
-                          onRestoreBlogs={this.props.onRestoreBlogs}
+                            formType={this.state.formType}
+                            modal={true}
+                            closeForm={this.closeForm}
+                            currentUser={this.props.currentUser}
+                            onBlogAdd={this.props.onBlogAdd}
+                            onBlogUpdate={this.props.onBlogUpdate}
+                            onRestoreBlogs={this.props.onRestoreBlogs}
                           />
                         }
                       </div>

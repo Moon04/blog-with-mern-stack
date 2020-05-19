@@ -27,6 +27,7 @@ class Signin extends Component {
           .label("Password")
       };
 
+      // valide form inputs to match schema
       validate = () => {
         const result = Joi.validate(this.state.author, this.schema, {
           abortEarly: false
@@ -43,6 +44,7 @@ class Signin extends Component {
         return errors;
       };
     
+      //validate each input to match schema
       validateInput = (property, name) => {
         //Sub Schema
         const schema = { [name]: this.schema[name] };
@@ -52,6 +54,7 @@ class Signin extends Component {
         return error.details[0];
       };
     
+      //handle input change
       handleChange = ({ target }) => {
         //Clone
         const author = { ...this.state.author };
@@ -69,6 +72,7 @@ class Signin extends Component {
         this.setState({ author, errors });
       };
         
+      //handle form submission
       handleSubmit = async e => {
         e.preventDefault();
 
@@ -122,7 +126,9 @@ class Signin extends Component {
                         </div>
                         <div className="row d-flex justify-content-center">
                             <div className="col-md-4">
+                                {/* sign in form */}
                                 <form onSubmit={this.handleSubmit}>
+                                    {/* email input */}
                                     <InputPlaceholder
                                         name="email"
                                         placeholder="Email"
@@ -132,6 +138,7 @@ class Signin extends Component {
                                         onChange={this.handleChange}
                                     />
 
+                                    {/* password input */}
                                     <InputPlaceholder
                                         name="password"
                                         placeholder="Password"
@@ -140,6 +147,7 @@ class Signin extends Component {
                                         error={this.state.errors.password}
                                         onChange={this.handleChange}
                                     />
+                                    {/* submit btn */}
                                     <button type="submit" className="btn btn-orange btn-block font-weight-bold">
                                       SIGN IN
                                     </button>

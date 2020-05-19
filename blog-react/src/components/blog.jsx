@@ -20,6 +20,7 @@ class Blog extends Component {
         }
     }
 
+    //handle follow btn function
     handleFollowBtn = async () =>{
 
         let currenrUser = this.props.currentUser;
@@ -68,20 +69,25 @@ class Blog extends Component {
                 <div className="card blog-card mb-4">
                     {this.props.currentUser!==null && this.props.currentUser.id === author.id &&
                         <div className="blog-crud">
-                            <a title="edit blog" onClick={()=>this.props.handleFormType(this.props.blog.id)}>
+                            {/* edit blog btn */}
+                            <a title="Edit blog" onClick={()=>this.props.handleFormType(this.props.blog.id)}>
                                 <i className="fas fa-edit"></i>
                             </a>
-                            <a title="delete blog" onClick={()=>this.props.onBlogDelete(this.props.blog)}>
+                            {/* delete blog btn */}
+                            <a title="Delete blog" onClick={()=>this.props.onBlogDelete(this.props.blog)}>
                                 <i className="fas fa-trash"></i>
                             </a>
                         </div>
                     }
+                    {/* blog image */}
                     <img src={this.props.blog.img} className="card-img-top" alt="Blog" />
                     <div className="row author-area">
                         <div className="d-flex col-6 author">
+                            {/* Author Avatar */}
                             <div className="author-img">
                                 <img src={author.avatar} className="img-thumbnail" alt="Author Avatar" />
                             </div>
+                            {/* Author Username */}
                             <div className="author-name">
                                 <Link to={profile}> 
                                     {author.username}
@@ -90,6 +96,7 @@ class Blog extends Component {
                         </div>
                     { this.props.currentUser !==null && this.props.currentUser.id !== author.id &&  
                             <div className="col-6 follow-author">
+                                {/* follow btn*/}
                                 <button type="button" className="btn-follow author-follow" onClick={this.handleFollowBtn}>
                                     {this.state.btnText}
                                 </button>
@@ -98,14 +105,17 @@ class Blog extends Component {
                     </div>
                     <div className="card-body">
                         <h5 className="card-title blog-title"> 
+                            {/* blog title */}
                             {this.props.blog.title} 
                         </h5>
                         <p className="card-text blog-body"> 
+                            {/* blog body */}
                             {this.props.blog.body} 
                         </p>
                         <div className="blog-tags">
+                            {/* blog tags */}
                             {this.props.blog.tags.map(tag => 
-                                <button type="button" className="btn blog-tag" key={tag.text}>
+                                <button type="button" className="btn blog-tag" key={tag.id}>
                                     {tag.text}
                                 </button>)
                             }

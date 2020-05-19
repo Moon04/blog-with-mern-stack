@@ -18,6 +18,7 @@ class App extends React.Component {
         blogs: []
     };
 
+    // Get: authors and blogs from database
     async componentDidMount() {
 
         const { data: authors } = await axios.get("http://localhost:3000/authors");
@@ -27,14 +28,17 @@ class App extends React.Component {
         this.setState({ blogs});
     }
     
+    //handle changes in blogs
     handleRestoreBlogs = blogs => {
         this.setState({ blogs });
     };
     
+    //handle current user
     handleCurrentUser = author => {
         this.setState({currentUser: author});
     };
 
+    //handle sign up form
     handleAuthorRegister = author => {
         //Clone
         const authors = [...this.state.authors];
@@ -47,6 +51,7 @@ class App extends React.Component {
         this.setState({currentUser: author});
     };
 
+    //handle add new blog
     handleBlogAdd = blog => {
         //Clone
         const blogs = [...this.state.blogs];
@@ -56,6 +61,7 @@ class App extends React.Component {
         this.setState({ blogs });
     };
 
+    //handle delete blog
     handleBlogDelete = blog => {
         //clone --> edit
         const blogs = this.state.blogs.filter(b => b.id !== blog.id);
@@ -63,6 +69,7 @@ class App extends React.Component {
         this.setState({ blogs });
     };
     
+    //handle edit blog
     handleBlogUpdate = blog => {
         //Clone
         const blogs = [...this.state.blogs];
@@ -73,6 +80,7 @@ class App extends React.Component {
         this.setState({ blogs });
     };
 
+    //handle follow btn
     handleFollowBtn = author => {
         //Clone
         const authors = [...this.state.authors];
@@ -88,6 +96,7 @@ class App extends React.Component {
         return (
             <React.Fragment>
                 <Switch>
+                    {/* SignIn */}
                     <Route path="/signin" 
                         render={ props => (
                             <Signin
@@ -96,6 +105,8 @@ class App extends React.Component {
                             />
                         )}
                     />
+
+                    {/* Signup */}
                     <Route path="/signup" 
                         render={ props => (
                             <Signup
@@ -105,6 +116,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* Home */}
                     <Route path="/home" exact 
                         render={ props => (
                             <Home 
@@ -121,6 +133,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* My Profile */}
                     <Route path="/myprofile" 
                         render={ props => (
                             <AuthorProfile
@@ -137,6 +150,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* Author Profile */}
                     <Route path="/authorProfile/:id" 
                         render={ props => (
                             <AuthorProfile
@@ -150,6 +164,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* Followings List */}
                     <Route path="/followings" 
                         render={ props => (
                             <AuthorsList 
@@ -162,6 +177,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* Followers List */}
                     <Route path="/followers" 
                         render={ props => (
                             <AuthorsList 
@@ -174,6 +190,7 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* Followings' Blogs */}
                     <Route path="/followingsblogs" 
                         render={ props => (
                             <FollowingsBlogs 
@@ -186,9 +203,13 @@ class App extends React.Component {
                         )}
                     />
 
+                    {/* NotFound Page */}
                     <Route path="/notfound" component={NotFound}/>
 
+                    {/* Redirect to Home */}
                     <Redirect from="/" to="/home"/>
+
+                    {/* Redirect to NotFound Page */}
                     <Redirect to="/notfound"/>
                 </Switch>
             </React.Fragment>

@@ -49,6 +49,7 @@ class Signup extends Component {
           .label("Password")
       };
 
+      // valide form inputs to match schema
       validate = () => {
         const result = Joi.validate(this.state.author, this.schema, {
           abortEarly: false
@@ -64,7 +65,8 @@ class Signup extends Component {
         }
         return errors;
       };
-    
+
+      //validate each input to match schema
       validateInput = (property, name) => {
         //Sub Schema.
         const schema = { [name]: this.schema[name] };
@@ -74,6 +76,7 @@ class Signup extends Component {
         return error.details[0];
       };
 
+      //handle input change
       handleChange = ({ target }) => {
         //Clone
         const author = { ...this.state.author };
@@ -91,10 +94,12 @@ class Signup extends Component {
         this.setState({ author, errors });
       };
 
+      //handle avatar input
       handleAvatar = signupAvatar => {
             this.setState({ avatar: signupAvatar });
       }
 
+      //handle form submission
       handleSubmit = async e => {
         e.preventDefault();
         
@@ -147,8 +152,10 @@ class Signup extends Component {
                         </div>
                         <div className="row d-flex justify-content-center">
                           <div className="col-md-4">
+                            {/* sign up form */}
                               <form onSubmit={this.handleSubmit}>
                                   <div className="d-flex justify-content-around">
+                                    {/* avatar input */}
                                       <div onClick={()=>this.handleAvatar("/images/avatar.jpg")}>
                                           <img src="/images/avatar.jpg" className="img-thumbnail signup-avatar" alt="Avatar"/>
                                       </div>
@@ -165,6 +172,7 @@ class Signup extends Component {
                                       </div>
                                   </div>
 
+                                  {/* username input */}
                                   <InputPlaceholder
                                       name="username"
                                       placeholder="Username"
@@ -174,6 +182,7 @@ class Signup extends Component {
                                       onChange={this.handleChange}
                                   />
 
+                                  {/* first name input */}
                                   <InputPlaceholder
                                       name="fName"
                                       placeholder="First Name"
@@ -183,6 +192,7 @@ class Signup extends Component {
                                       onChange={this.handleChange}
                                   />
 
+                                  {/* second name input */}
                                   <InputPlaceholder
                                       name="lName"
                                       placeholder="Last Name"
@@ -192,6 +202,7 @@ class Signup extends Component {
                                       onChange={this.handleChange}
                                   />
 
+                                  {/* email input */}
                                   <InputPlaceholder
                                       name="email"
                                       placeholder="Email"
@@ -201,6 +212,7 @@ class Signup extends Component {
                                       onChange={this.handleChange}
                                   />
                               
+                                  {/* password input */}
                                   <InputPlaceholder
                                           name="password"
                                           placeholder="Password"
@@ -208,7 +220,8 @@ class Signup extends Component {
                                           value={this.state.author.password}
                                           error={this.state.errors.password}
                                           onChange={this.handleChange}
-                                      />
+                                  />
+                                  {/* submit btn */}
                                   <button type="submit" className="btn btn-orange btn-block font-weight-bold">
                                     SIGN UP
                                   </button>

@@ -43,6 +43,7 @@ const AuthorsList = props => {
                             <ul className="list-body pl-0">
                                 {authors.map(author => 
                                     <AuthorCard 
+                                        key={author.id}
                                         currentUser={props.currentUser}
                                         author={author}
                                         handleFollowBtn={props.handleFollowBtn}
