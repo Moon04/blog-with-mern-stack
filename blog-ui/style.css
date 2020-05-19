@@ -270,6 +270,10 @@ body{
     color: white;
 }
 
+.btn-publish{
+    padding: 6px;
+    margin-top: 0;
+}
 .author-follow:hover, .blog-tag:hover, .btn-publish:hover{
     color: #758690;
     background-color: #343a40;
@@ -293,11 +297,6 @@ body{
 .blog-tag{
     min-width: 50px;
 }
-
-.btn-publish{
-    padding: 2%;
-}
-
 
 .notfound{
     width: 100%;
@@ -388,4 +387,24 @@ body{
     display: inline-block;
     padding: 0 15px;
     position: relative;
+}
+
+.blog-crud{
+    position: absolute;
+    margin-left: 100%;
+    margin-top: -5%;
+    color: #343a40;
+}
+
+.blog-crud a{
+    cursor: pointer;
+}
+
+.blog-crud a i {
+    font-size: 1.1rem;
+}
+
+
+.blog-form-modal div div{
+    width: 50%;
 }

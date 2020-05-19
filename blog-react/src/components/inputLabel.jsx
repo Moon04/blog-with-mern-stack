@@ -1,10 +1,14 @@
 import React from "react";
 
 const InputLabel = props => {
+  
   const { name, label, type, value, error, onChange } = props;
+
   return (
     <div className="form-group">
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name}>
+        {label}
+      </label>
       <input
         autoFocus
         id={name}
@@ -14,7 +18,11 @@ const InputLabel = props => {
         value={value}
         onChange={onChange}
       />
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && 
+        <div className="alert alert-warning">
+          {error}
+        </div>
+      }
     </div>
   );
 };

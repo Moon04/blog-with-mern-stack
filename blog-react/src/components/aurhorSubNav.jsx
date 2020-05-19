@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 
 class AuthorSubNav extends Component {
+
     state = {
         openDropdown: "none"
     };
@@ -15,36 +16,41 @@ class AuthorSubNav extends Component {
     };
 
     render(){
-    return ( 
-        <React.Fragment>
+        return ( 
+            <React.Fragment>
 
-                <form className="form-inline my-2 my-lg-0 mr-2 search-form">
-                    <input className="form-control search-input" type="search" placeholder="Search Blogs" aria-label="Search" />
-                    <button className="btn my-2 my-sm-0 search-btn" type="submit">
-                        <i className="fas fa-search" />
-                    </button>
-                </form>
-                <a onClick={this.openDropdown}>
-                    <img src="../images/avatar.jpg" className="profile-img" alt="profile-avatar"/>
-                </a>
-                <ul className="profile-dropdown" style={{display: this.state.openDropdown}}>
-                    <li>
-                    <Link to="/myprofile">
-                        <i className="fas fa-user mr-2" />
-                        My Profile
-                    </Link>
-                    </li>
-                    <hr />
-                    <li>
-                    <Link to="/signin">
-                        <i className="fas fa-power-off mr-2" />
-                        Log Out
-                    </Link>
-                    </li>
-                </ul>
+                    {/* Search Input */}
+                    <form className="form-inline my-2 my-lg-0 mr-2 search-form">
+                        <input className="form-control search-input" type="search" placeholder="Search Blogs" aria-label="Search" />
+                        <button className="btn my-2 my-sm-0 search-btn" type="submit">
+                            <i className="fas fa-search" />
+                        </button>
+                    </form>
 
-        </React.Fragment>
-     );}
+                    {/* Author Avatar */}
+                    <Link to="#" onClick={this.openDropdown}>
+                        <img src={this.props.currentUser.avatar} className="profile-img" alt="profile-avatar"/>
+                    </Link>
+                    
+                    {/* Author Dropdown */}
+                    <ul className="profile-dropdown" style={{display: this.state.openDropdown}}>
+                        <li>
+                            <Link to="/myprofile">
+                                <i className="fas fa-user mr-2" />
+                                My Profile
+                            </Link>
+                        </li>
+                        <hr />
+                        <li>
+                            <Link to="/signin">
+                                <i className="fas fa-power-off mr-2" />
+                                Log Out
+                            </Link>
+                        </li>
+                    </ul>
+            </React.Fragment>
+        );
+    }
 }
  
 export default AuthorSubNav;

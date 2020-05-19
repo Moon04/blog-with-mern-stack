@@ -1,11 +1,12 @@
 import React from "react";
 
 const InputPlaceholder = props => {
+
   const { name, placeholder, type, value, error, onChange } = props;
+
   return (
     <div className="form-group">
       <input
-        autoFocus
         id={name}
         name={name}
         type={type}
@@ -14,7 +15,11 @@ const InputPlaceholder = props => {
         value={value}
         onChange={onChange}
       />
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && 
+        <div className="alert alert-warning">
+          {error}
+        </div>
+      }
     </div>
   );
 };

@@ -14,8 +14,11 @@
         4,
         5
       ],
-      "following": [
+      "followings": [
         2,
+        6,
+        3,
+        4,
         5
       ]
     },
@@ -33,7 +36,7 @@
         3,
         5
       ],
-      "following": [
+      "followings": [
         1,
         3,
         6
@@ -53,7 +56,7 @@
         5,
         6
       ],
-      "following": [
+      "followings": [
         1,
         2,
         6
@@ -72,7 +75,7 @@
         1,
         6
       ],
-      "following": [
+      "followings": [
         1,
         5
       ]
@@ -91,7 +94,7 @@
         3,
         6
       ],
-      "following": [
+      "followings": [
         1,
         2,
         3
@@ -110,31 +113,36 @@
         2,
         3
       ],
-      "following": [
+      "followings": [
         3,
         4,
         5
       ]
+    },
+    {
+      "fName": "mona",
+      "lName": "mohamed",
+      "username": "mona195",
+      "email": "mona195@gmail.com",
+      "password": "Blabla19",
+      "avatar": "/images/apa.jpg",
+      "followers": [],
+      "followings": [],
+      "id": 7
+    },
+    {
+      "fName": "mona",
+      "lName": "mohamed",
+      "username": "mona1920",
+      "email": "mona195@gmail.com",
+      "password": "Blabla20",
+      "avatar": "/images/katara.jpg",
+      "followers": [],
+      "followings": [],
+      "id": 8
     }
   ],
   "blogs": [
-    {
-      "id": 1,
-      "authorId": 1,
-      "title": "First Mona's Blog",
-      "body": "blaaaaaaaaaaaaaa lllaaaaaaaaaaaaaaaa bllllaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb",
-      "tags": [
-        {
-          "id": 1,
-          "text": "Art"
-        },
-        {
-          "id": 2,
-          "text": "Fun"
-        }
-      ],
-      "img": "/images/blog1-img.jpg"
-    },
     {
       "id": 2,
       "authorId": 3,
@@ -168,23 +176,6 @@
         }
       ],
       "img": "/images/blog3-img.jpg"
-    },
-    {
-      "id": 4,
-      "authorId": 1,
-      "title": "Second Mona's Blog",
-      "body": "blaaaaaaaaaaaaaa lllaaaaaaaaaaaaaaaa bllllaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb",
-      "tags": [
-        {
-          "id": 1,
-          "text": "Art"
-        },
-        {
-          "id": 2,
-          "text": "Fun"
-        }
-      ],
-      "img": "/images/blog4-img.jpg"
     },
     {
       "id": 5,
@@ -238,8 +229,26 @@
       "img": "/images/blog3-img.jpg"
     },
     {
-      "title": "try new blog",
-      "body": "try new blogtry new blogtry new blogtry new blogtry new blogtry new blogtry new blogtry new blogtry new blogtry new blogtry new blog",
+      "id": 8,
+      "authorId": 1,
+      "title": "First Mona's Blog",
+      "body": "blaaaaaaaaaaaaaa lllaaaaaaaaaaaaaaaa bllllaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb",
+      "tags": [
+        {
+          "id": 1,
+          "text": "Art"
+        },
+        {
+          "id": 2,
+          "text": "Fun"
+        }
+      ],
+      "img": "/images/blog3-img.jpg"
+    },
+    {
+      "authorId": 1,
+      "title": "second blog",
+      "body": "y raaaaab tasht3'l b222222222a",
       "tags": [
         {
           "id": "Writting",
@@ -247,19 +256,59 @@
         }
       ],
       "img": "C:\\fakepath\\blog4-img.jpg",
-      "id": 8
+      "id": 9
     },
     {
-      "title": "try new blog",
-      "body": "try new blog again",
+      "authorId": 1,
+      "title": "tany tannny",
+      "body": "tany tagroba b3d el profile ",
       "tags": [
         {
           "id": "Art",
           "text": "Art"
         }
       ],
-      "img": "C:\\fakepath\\blog1-img.jpg",
-      "id": 9
+      "img": "",
+      "id": 10
+    },
+    {
+      "authorId": 1,
+      "title": "kaman mara",
+      "body": "maraaaaaaaaaaaaaaaaaaaaaaa\nkamaaaaaaaaaaaaaaaaaaaaaaaaaaan",
+      "tags": [
+        {
+          "id": "Art",
+          "text": "Art"
+        }
+      ],
+      "img": "",
+      "id": 11
+    },
+    {
+      "authorId": 1,
+      "title": "haaaaaaaa",
+      "body": "haaaaaaaaaaaaaaa b2a",
+      "tags": [
+        {
+          "id": "Writting",
+          "text": "Writting"
+        }
+      ],
+      "img": "",
+      "id": 12
+    },
+    {
+      "authorId": 1,
+      "title": "klakeet el mara 9000",
+      "body": "yalaaaaaaaaaaaaaaaa",
+      "tags": [
+        {
+          "id": "Writting",
+          "text": "Writting"
+        }
+      ],
+      "img": "",
+      "id": 16
     }
   ]
 }

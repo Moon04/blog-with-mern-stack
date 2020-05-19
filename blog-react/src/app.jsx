@@ -18,7 +18,6 @@ class App extends React.Component {
         blogs: []
     };
 
-    
     async componentDidMount() {
 
         const { data: authors } = await axios.get("http://localhost:3000/authors");
@@ -26,8 +25,6 @@ class App extends React.Component {
 
         const  { data: blogs } = await axios.get("http://localhost:3000/blogs");
         this.setState({ blogs});
-
-        // console.log(authors);     
     }
     
     handleRestoreBlogs = blogs => {
@@ -45,6 +42,9 @@ class App extends React.Component {
         authors.unshift(author);
         //Stste
         this.setState({ authors });
+
+        //current user
+        this.setState({currentUser: author});
     };
 
     handleBlogAdd = blog => {
@@ -62,7 +62,6 @@ class App extends React.Component {
         //Set State
         this.setState({ blogs });
     };
-
     
     handleBlogUpdate = blog => {
         //Clone
@@ -74,82 +73,118 @@ class App extends React.Component {
         this.setState({ blogs });
     };
 
+    handleFollowBtn = author => {
+        //Clone
+        const authors = [...this.state.authors];
+        //Edit
+        const index = authors.findIndex(a => a.id === author.id);
+        authors[index] = author;
+        //Set State
+        this.setState({ authors });
+    };
 
     render() {
 
         return (
             <React.Fragment>
                 <Switch>
-                    <Route path="/signin" render={ props => (
-                        <Signin
-                            {...props}
-                            onSignIn={this.handleCurrentUser}
-                        />
-                    )}/>
-                    <Route path="/signup" render={ props => (
-                        <Signup
-                            {...props}
-                            onAuthorRegister={this.handleAuthorRegister}
-                        />
-                    )}/>
+                    <Route path="/signin" 
+                        render={ props => (
+                            <Signin
+                                {...props}
+                                onSignIn={this.handleCurrentUser}
+                            />
+                        )}
+                    />
+                    <Route path="/signup" 
+                        render={ props => (
+                            <Signup
+                                {...props}
+                                onAuthorRegister={this.handleAuthorRegister}
+                            />
+                        )}
+                    />
 
-                    <Route path="/home" exact render={ props => (
-                        <Home 
-                            {...props}
-                            currentUser={this.state.currentUser} 
-                            authors={this.state.authors} 
-                            blogs={this.state.blogs}
-                            onBlogAdd={this.handleBlogAdd}
-                            onBlogUpdate={this.handleBlogUpdate}
-                        />
-                    )}/>
+                    <Route path="/home" exact 
+                        render={ props => (
+                            <Home 
+                                {...props}
+                                currentUser={this.state.currentUser} 
+                                authors={this.state.authors} 
+                                blogs={this.state.blogs}
+                                onBlogAdd={this.handleBlogAdd}
+                                onBlogUpdate={this.handleBlogUpdate}
+                                onBlogDelete={this.handleBlogDelete}
+                                onRestoreBlogs={this.handleRestoreBlogs}
+                                handleFollowBtn={this.handleFollowBtn}
+                            />
+                        )}
+                    />
 
-                    <Route path="/myprofile" render={ props => (
-                        <AuthorProfile
-                            {...props}
-                            currentUser={this.state.currentUser}
-                            template="myprofile" 
-                            authors={this.state.authors}
-                            blogs={this.state.blogs}
-                            onBlogAdd={this.handleBlogAdd}
-                            onBlogUpdate={this.handleBlogUpdate}
-                            onBlogDelete={this.handleBlogDelete}
-                        />
-                    )}/>
+                    <Route path="/myprofile" 
+                        render={ props => (
+                            <AuthorProfile
+                                {...props}
+                                currentUser={this.state.currentUser}
+                                template="myprofile" 
+                                authors={this.state.authors}
+                                blogs={this.state.blogs}
+                                onBlogAdd={this.handleBlogAdd}
+                                onBlogUpdate={this.handleBlogUpdate}
+                                onBlogDelete={this.handleBlogDelete}
+                                onRestoreBlogs={this.handleRestoreBlogs}
+                            />
+                        )}
+                    />
 
-                    <Route path="/authorProfile/:id" render={ props => (
-                        <AuthorProfile
-                            {...props} 
-                            currentUser={this.state.currentUser} 
-                            template="authorprofile"
-                            authors={this.state.authors}
-                            blogs={this.state.blogs}
-                        />
-                    )}/>
+                    <Route path="/authorProfile/:id" 
+                        render={ props => (
+                            <AuthorProfile
+                                {...props} 
+                                currentUser={this.state.currentUser} 
+                                template="authorprofile"
+                                authors={this.state.authors}
+                                blogs={this.state.blogs}
+                                handleFollowBtn={this.handleFollowBtn}
+                            />
+                        )}
+                    />
 
-                    <Route path="/followings" render={ props => (
-                        <AuthorsList 
-                            {...props}
-                            listType="followings"
-                            authors={this.state.authors}
-                        />
-                    )}/>
-                    <Route path="/followers" render={ props => (
-                        <AuthorsList 
-                            {...props}
-                            listType="followers"
-                            authors={this.state.authors}
-                        />
-                    )}/>
+                    <Route path="/followings" 
+                        render={ props => (
+                            <AuthorsList 
+                                {...props}
+                                listType="followings"
+                                currentUser={this.state.currentUser}
+                                authors={this.state.authors}
+                                handleFollowBtn={this.handleFollowBtn}
+                            />
+                        )}
+                    />
 
-                    <Route path="/followingsblogs" render={ props => (
-                        <FollowingsBlogs 
-                            {...props}
-                            currentUser={this.currentUser}
-                            authors={this.state.authors}
-                            blogs={this.state.blogs}
-                        />
-                    )}/>
+                    <Route path="/followers" 
+                        render={ props => (
+                            <AuthorsList 
+                                {...props}
+                                listType="followers"
+                                currentUser={this.state.currentUser}
+                                authors={this.state.authors}
+                                handleFollowBtn={this.handleFollowBtn}
+                            />
+                        )}
+                    />
+
+                    <Route path="/followingsblogs" 
+                        render={ props => (
+                            <FollowingsBlogs 
+                                {...props}
+                                currentUser={this.state.currentUser}
+                                authors={this.state.authors}
+                                blogs={this.state.blogs}
+                                handleFollowBtn={this.handleFollowBtn}
+                            />
+                        )}
+                    />
 
                     <Route path="/notfound" component={NotFound}/>
 

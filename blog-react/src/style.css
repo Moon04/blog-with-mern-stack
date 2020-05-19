@@ -3,6 +3,11 @@ body{
     background-color: #eff3f5;
     font-family: "Lato", sans-serif;
 }
+
+button{
+    border: none;
+}
+
 .search-btn{
     color: #6c757d;
 }
@@ -38,6 +43,7 @@ body{
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 .profile-dropdown{
@@ -121,7 +127,6 @@ body{
     padding: 20px 0px 20px 250px;
     width: 100%;
     color: #758690;
-    text-decoration: none;
 }
 
 /* .profile-details a{
@@ -136,19 +141,20 @@ body{
 }
 
 .btn-details{
+    height: 50%;
+    width: 30%;
     text-align: center;
+    border-radius: 5px;
     margin-top: 3.5%;
     padding: 0.5%;
-    border: none;
     white-space: nowrap;
     background-color: transparent;
     color: #758690;
-    cursor: pointer;
 }
 
 .btn-details:hover{
      color: #ff7043;
-     text-decoration: none;
+     cursor: pointer;
 }
 
 .df-jc{
@@ -174,6 +180,11 @@ body{
    position: relative;
    cursor: pointer;
 }
+
+.blogs-menu li a{
+    color: #263843;
+    text-decoration: none;
+ }
 
 .blogs-menu li b{
     color: #263843;
@@ -340,7 +351,7 @@ margin-top: 0.5rem;
 
 .ReactTags__selected .ReactTags__tag
 {
-    padding: 3%;
+    padding: 5px;
     margin-right: 1%;
     margin-bottom: 77px;
     height: 2rem;
@@ -351,7 +362,7 @@ margin-top: 0.5rem;
 }
 
 .ReactTags__selected .ReactTags__remove{
-    padding: 3%;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -425,6 +436,11 @@ margin-top: 0.5rem;
     display: inline-block;
 }
 
+.author-card div p a{
+   text-decoration: none;
+   color: #263843;
+}
+
 .author-card div p b{
     color: #263843;
     font: 400 15px/22px "Lato", sans-serif;
@@ -449,3 +465,34 @@ margin-top: 0.5rem;
 
 
 
+
+.blog-crud{
+    position: absolute;
+    margin-left: 100%;
+    margin-top: -5%;
+    color: #343a40;
+}
+
+.blog-crud a{
+    cursor: pointer;
+}
+
+.blog-crud a i {
+    font-size: 1.1rem;
+}
+
+.profile-details-modal{
+    padding: 2%;
+}
+
+
+.signup-avatar{
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+}
+
+.signup-p{
+    text-align: center;
+}
