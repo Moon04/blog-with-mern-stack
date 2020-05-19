@@ -46,7 +46,7 @@ class AuthorInfo extends Component {
 
         //State
         this.props.handleFollowBtn(data);
-        window.location.reload(false);
+        // window.location.reload(false);
     };
 
     render(){
