@@ -10,8 +10,8 @@ class AuthorInfo extends Component {
 
     
     componentDidMount(){
-        let followings = this.props.currentUser.followings;
-        const following = followings.filter(following => following === this.props.author.id).length;
+        let followings = this.props.currentAuthor?.followings;
+        const following = followings?.filter(following => following === this.props.author?._id).length;
         following === 0?
         this.setState({btnText: "Follow"}):
         this.setState({btnText: "Unfollow"});
@@ -20,51 +20,64 @@ class AuthorInfo extends Component {
     //handel follow btn
     handleFollowBtn = async () =>{
 
-        let currenrUser = this.props.currentUser;
+        let currentAuthor = this.props.currentAuthor;
+        let userId = '';
+        let resData = null;
 
         if(this.state.btnText === "Follow")
         {
             //Clone
             const author = this.props.author;
             //Edit
-            currenrUser.followings.unshift(author.id);
+            currentAuthor.followings.unshift(author._id);
             //setstate
             this.setState({btnText: "Unfollow"});
+
+            userId = author._id;
+            const { data } = await axios.post(
+                'http://localhost:3000/user/follow', 
+                { userId },
+                { headers: {"Authorization" : `${this.state.token}`} }
+                );
+
+            resData = data.data;
         }
         else
         {
             //clone --> edit
             const author = this.props.author;
-            const followings = currenrUser.followings.filter(following => following !== author.id);
-            currenrUser.followings = followings;
+            const followings = currentAuthor.followings.filter(following => following !== author._id);
+            currentAuthor.followings = followings;
             this.setState({btnText: "Follow"});
+
+            userId = author._id;
+            const { data } = await axios.post(
+                'http://localhost:3000/user/unfollow', 
+                { userId },
+                { headers: {"Authorization" : `${this.state.token}`} }
+                );
+
+            resData = data.data;
         }
 
-        //call backend
-        const { data } = await axios.put(
-        `http://localhost:3000/authors/${this.props.currentUser.id}`,
-        currenrUser
-        );
-
         //State
-        this.props.handleFollowBtn(data);
-        // window.location.reload(false);
+        this.props.handleFollowBtn(resData);
+
     };
 
     render(){
-        let blogs = [];
-        blogs = this.props.blogs.filter(blog => blog.authorId === this.props.author.id);
 
         let followersLink = "#";
         let followingsLink = "#";
 
-        if(this.props.currentUser.id === this.props.author.id)
+        if(this.props.currentAuthor?._id === this.props.author?._id)
         {
             followersLink = "/followers";
             followingsLink = "/followings";
         }
 
         return ( 
+
 
             <React.Fragment>
                 <section className="author-profile">
@@ -79,34 +92,33 @@ class AuthorInfo extends Component {
                             <ul className="blogs-menu">
                                 {/* Blogs Count */}
                                 <li>
-                                    Blogs <b>{blogs.length}</b>
+                                    Blogs <b>{this.props.blogsCount? this.props.blogsCount:0}</b>
                                 </li>
                                 {/* Followers Count */}
                                 <li>
                                     <Link to={followersLink}>
-                                        Followers <b>{this.props.author.followers.length}</b>
+                                        Followers <b>{this.props.author?.followers? this.props.author.followers.length:0}</b>
                                     </Link>
                                 </li>
                                 {/* Followings Count */}
                                 <li>
                                     <Link to={followingsLink}>
-                                        Followings <b>{this.props.author.followings.length}</b>
+                                        Followings <b>{this.props.author?.followings?this.props.author.followings.length:0}</b>
                                     </Link>
                                 </li>
                             </ul>
                         </div>
-                        {this.props.author.id !== this.props.currentUser.id ? 
-                            <div className="col-md-4 btn-follow-dstart">
-                                {/* Follow Btn */}
-                                <button type="button" className="btn-follow" onClick={this.handleFollowBtn}>
-                                    {this.state.btnText}
-                                </button>
-                            </div>
-                            :
+                        {this.props.author?._id === this.props.currentAuthor?._id ? 
                             <div className="col-md-4 btn-follow-dstart">
                                 {/* New Blog Btn */}
                                 <button type="button" className="btn-follow" onClick={()=>this.props.handleFormType("Add")}>
                                     + New Blog
+                                </button>
+                            </div>:
+                            <div className="col-md-4 btn-follow-dstart">
+                                {/* Follow Btn */}
+                                <button type="button" className="btn-follow" onClick={this.handleFollowBtn}>
+                                    {this.state.btnText}
                                 </button>
                             </div>
                         }

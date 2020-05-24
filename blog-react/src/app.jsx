@@ -2,6 +2,9 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
+import { getFromStorage } from './utilities/storage';
+
+
 import Home from './components/home';
 import Signin from './components/signin';
 import Signup from './components/signup';
@@ -13,31 +16,40 @@ import FollowingsBlogs from './components/followingsBlogs';
 class App extends React.Component {
 
     state = {
-        currentUser: null, 
+        token: '',
         authors: [],
-        blogs: []
+        blogs: [],
+        blogsMetadata: 0,
+        activePage: 1
     };
+
+    getAuthorsBlogs = async () =>{
+        const { data: blogsData } = await axios.get(`http://localhost:3000/basicdata/posts?pageNumber=${this.state.activePage-1}`);
+        await this.setState({ blogs: blogsData.data});
+        await this.setState({ blogsMetadata: blogsData.metadata });
+    }
 
     // Get: authors and blogs from database
     async componentDidMount() {
 
-        const { data: authors } = await axios.get("http://localhost:3000/authors");
-        this.setState({ authors });
+        const token = getFromStorage('user_token');
+        if (token) 
+        {
+            this.setState({token})
+        }
+        const { data: authorsData } = await axios.get("http://localhost:3000/basicdata/users");
+        await this.setState({ authors: authorsData.data });
 
-        const  { data: blogs } = await axios.get("http://localhost:3000/blogs");
-        this.setState({ blogs});
+        this.getAuthorsBlogs();
     }
-    
-    //handle changes in blogs
-    handleRestoreBlogs = blogs => {
-        this.setState({ blogs });
-    };
-    
-    //handle current user
-    handleCurrentUser = author => {
-        this.setState({currentUser: author});
-    };
 
+    async componentDidUpdate(prevProps, prevState) {
+        if (this.state.activePage !== prevState.activePage) {
+          this.getAuthorsBlogs(); 
+        }
+      }
+  
+    
     //handle sign up form
     handleAuthorRegister = author => {
         //Clone
@@ -46,10 +58,12 @@ class App extends React.Component {
         authors.unshift(author);
         //Stste
         this.setState({ authors });
-
-        //current user
-        this.setState({currentUser: author});
     };
+
+    //handle page change
+    handlePageChange = page => {
+        this.setState({ activePage: page });
+      };
 
     //handle add new blog
     handleBlogAdd = blog => {
@@ -64,7 +78,7 @@ class App extends React.Component {
     //handle delete blog
     handleBlogDelete = blog => {
         //clone --> edit
-        const blogs = this.state.blogs.filter(b => b.id !== blog.id);
+        const blogs = this.state.blogs.filter(b => b._id !== blog._id);
         //Set State
         this.setState({ blogs });
     };
@@ -74,7 +88,7 @@ class App extends React.Component {
         //Clone
         const blogs = [...this.state.blogs];
         //Edit
-        const index = blogs.findIndex(b => b.id === blog.id);
+        const index = blogs.findIndex(b => b._id === blog._id);
         blogs[index] = blog;
         //Set State
         this.setState({ blogs });
@@ -85,11 +99,27 @@ class App extends React.Component {
         //Clone
         const authors = [...this.state.authors];
         //Edit
-        const index = authors.findIndex(a => a.id === author.id);
+        const index = authors.findIndex(a => a._id === author._id);
         authors[index] = author;
         //Set State
         this.setState({ authors });
     };
+
+    //handle search btn
+    handleSearchBtn = async term =>{
+        if(term)
+        {
+            const { data: blogsData } = await axios.get(`http://localhost:3000/post/search/"${term}"?pageNumber=${this.state.activePage-1}`,
+            { headers: {"Authorization" : `${this.state.token}`} });
+            await this.setState({ blogs: blogsData.data});
+            await this.setState({ blogsMetadata: blogsData.metadata });
+        }
+    }
+
+    //pagination
+    handlePageChange = page=>{
+        this.setState({activePage: page});
+      };
 
     render() {
 
@@ -97,14 +127,7 @@ class App extends React.Component {
             <React.Fragment>
                 <Switch>
                     {/* SignIn */}
-                    <Route path="/signin" 
-                        render={ props => (
-                            <Signin
-                                {...props}
-                                onSignIn={this.handleCurrentUser}
-                            />
-                        )}
-                    />
+                    <Route path="/signin" component={Signin}/>
 
                     {/* Signup */}
                     <Route path="/signup" 
@@ -121,14 +144,16 @@ class App extends React.Component {
                         render={ props => (
                             <Home 
                                 {...props}
-                                currentUser={this.state.currentUser} 
-                                authors={this.state.authors} 
+                                activePage={this.activePage}
                                 blogs={this.state.blogs}
+                                authors={this.state.authors}
+                                blogsMetadata={this.state.blogsMetadata}
                                 onBlogAdd={this.handleBlogAdd}
                                 onBlogUpdate={this.handleBlogUpdate}
                                 onBlogDelete={this.handleBlogDelete}
-                                onRestoreBlogs={this.handleRestoreBlogs}
                                 handleFollowBtn={this.handleFollowBtn}
+                                handlePageChange={this.handlePageChange}
+                                handleSearchBtn={this.handleSearchBtn}
                             />
                         )}
                     />
@@ -138,14 +163,10 @@ class App extends React.Component {
                         render={ props => (
                             <AuthorProfile
                                 {...props}
-                                currentUser={this.state.currentUser}
                                 template="myprofile" 
-                                authors={this.state.authors}
-                                blogs={this.state.blogs}
                                 onBlogAdd={this.handleBlogAdd}
                                 onBlogUpdate={this.handleBlogUpdate}
                                 onBlogDelete={this.handleBlogDelete}
-                                onRestoreBlogs={this.handleRestoreBlogs}
                             />
                         )}
                     />
@@ -155,10 +176,7 @@ class App extends React.Component {
                         render={ props => (
                             <AuthorProfile
                                 {...props} 
-                                currentUser={this.state.currentUser} 
                                 template="authorprofile"
-                                authors={this.state.authors}
-                                blogs={this.state.blogs}
                                 handleFollowBtn={this.handleFollowBtn}
                             />
                         )}
@@ -170,8 +188,6 @@ class App extends React.Component {
                             <AuthorsList 
                                 {...props}
                                 listType="followings"
-                                currentUser={this.state.currentUser}
-                                authors={this.state.authors}
                                 handleFollowBtn={this.handleFollowBtn}
                             />
                         )}
@@ -183,8 +199,6 @@ class App extends React.Component {
                             <AuthorsList 
                                 {...props}
                                 listType="followers"
-                                currentUser={this.state.currentUser}
-                                authors={this.state.authors}
                                 handleFollowBtn={this.handleFollowBtn}
                             />
                         )}
@@ -195,9 +209,6 @@ class App extends React.Component {
                         render={ props => (
                             <FollowingsBlogs 
                                 {...props}
-                                currentUser={this.state.currentUser}
-                                authors={this.state.authors}
-                                blogs={this.state.blogs}
                                 handleFollowBtn={this.handleFollowBtn}
                             />
                         )}

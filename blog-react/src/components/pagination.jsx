@@ -1,28 +1,37 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-class Pagination extends Component {
-    state = {  };
+const Pagination = props => {
 
-    render() { 
-        return ( 
-            <React.Fragment>
-                <nav aria-label="Page navigation">
-                    <ul className="pagination justify-content-end">
-                        <li className="page-item">
-                            <Link className="page-link" to="#">1</Link>
-                        </li>
-                        <li className="page-item active">
-                            <Link className="page-link" to="#">2</Link>
-                        </li>
-                        <li className="page-item">
-                            <Link className="page-link" to="#">3</Link>
-                        </li>
-                    </ul>
-                </nav>
-            </React.Fragment>
-         );
+    let pages = [];
+
+    for (let index = 1; index <= props.pagesCount; index++) {
+      pages.push(index);
     }
-}
+
+    return (
+      <nav aria-label="...">
+        <ul className="pagination floatRight" style={{float: "right"}}>
+          {pages.map(page => (
+            <li
+              key={page}
+              className={
+                props.activePage === page ? "page-item active-page" : "page-item"
+              }
+            >
+              <Link
+                onClick={() => props.onPageChange(page)}
+                className="page-link page"
+                to="#"
+              >
+                {page}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+  
  
 export default Pagination;

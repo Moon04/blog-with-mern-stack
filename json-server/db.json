@@ -15,7 +15,6 @@
         5
       ],
       "followings": [
-        2,
         6,
         3,
         4,
@@ -229,38 +228,8 @@
       "img": "/images/blog3-img.jpg"
     },
     {
-      "id": 8,
       "authorId": 1,
-      "title": "First Mona's Blog",
-      "body": "blaaaaaaaaaaaaaa lllaaaaaaaaaaaaaaaa bllllaaaaaaaaaaa bbbbbbbbbbbbbbbbbbbbb",
-      "tags": [
-        {
-          "id": "Art",
-          "text": "Art"
-        },
-        {
-          "id": "Fun",
-          "text": "Fun"
-        }
-      ],
-      "img": "/images/blog3-img.jpg"
-    },
-    {
-      "authorId": 1,
-      "title": "second blog",
-      "body": "y raaaaab tasht3'l b222222222a",
-      "tags": [
-        {
-          "id": "Writting",
-          "text": "Writting"
-        }
-      ],
-      "img": "C:\\fakepath\\blog4-img.jpg",
-      "id": 9
-    },
-    {
-      "authorId": 1,
-      "title": "tany tannny",
+      "title": "edited blog",
       "body": "tany tagroba b3d el profile ",
       "tags": [
         {
@@ -268,7 +237,6 @@
           "text": "Art"
         }
       ],
-      "img": "",
       "id": 10
     },
     {

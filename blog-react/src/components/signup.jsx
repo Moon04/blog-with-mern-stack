@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import Joi from "joi-browser";
 import axios from "axios";
 
+import { setInStorage } from '../utilities/storage';
+
 import InputPlaceholder from './inputPlaceholder';
 
 class Signup extends Component {
 
       state = {
           author: {
-              id: 0,
-              fName: "",
-              lName: "",
+              firstName: "",
+              lastName: "",
               username: "",
+              about: "",
               email: "",
               password: ""
           },
@@ -20,15 +22,12 @@ class Signup extends Component {
         };
 
       schema = {
-        id: Joi.number()
-            .integer()
-            .min(0),
-        fName: Joi.string()
+        firstName: Joi.string()
             .min(3)
             .max(10)
             .required()
             .label("First Name"),
-        lName: Joi.string()
+        lastName: Joi.string()
         .min(3)
         .max(10)
         .required()
@@ -38,6 +37,11 @@ class Signup extends Component {
         .max(25)
         .required()
         .label("Username"),
+        about: Joi.string()
+        .min(20)
+        .max(260)
+        .required()
+        .label("About"),
         email: Joi.string()
           .email()
           .min(10)
@@ -96,56 +100,74 @@ class Signup extends Component {
 
       //handle avatar input
       handleAvatar = signupAvatar => {
-            this.setState({ avatar: signupAvatar });
+         this.setState({ avatar: signupAvatar });
       }
 
-      //handle form submission
-      handleSubmit = async e => {
+      register = ({firstName, lastName, username, about, avatar, email, password}) =>{
+          axios.post('http://localhost:3000/register', {
+            firstName,
+            lastName,
+            username,
+            about,
+            avatar,
+            email,
+            password
+          }).then(res=>{
+
+            setInStorage('user_token', res.data.data.token);
+
+            //Update State
+            this.props.onAuthorRegister(res.data.data);
+
+            //Redirect to Home Page
+            this.props.history.replace("/home");
+            
+            console.log(res);
+          }).catch(err=>{
+              console.log(err);
+          });
+      };
+
+      handleSubmit = (e) =>{
         e.preventDefault();
-        
-        const author = {...this.state.author}
-        
+    
         //Validation :
         const errors = this.validate(); 
-        
+    
         if (errors) {
-            console.log(errors);
-            console.log(author);
-            this.setState({ errors });
-            console.log(this.state.errors);
-            return;
+          this.setState({ errors });
+          return;
         };
-        
+    
         //valid
         this.setState({ errors: {} });
-        
-        //Call backend
-        delete author.id;
-        author.avatar = this.state.avatar;
-        author.followers = [];
-        author.followings = [];
-        //CallBackEnd
-        const { data } = await axios.post(
-            "http://localhost:3000/authors",
-            author
-        );
-        //Update State
-        this.props.onAuthorRegister(data);
 
-        //Redirect to Home Page
-        this.props.history.replace("/home");
+        //add avatar
+        const avatar = this.state.avatar;
+
+        //call backend
+        const {
+          firstName: {value: firstName},
+          lastName: {value: lastName},
+          username: {value: username},
+          about: {value: about},
+          email: {value: email},
+          password: {value: password}
+        } = e.target;
+        this.register({firstName, lastName, username, about, avatar, email, password});
 
       };
+
 
     render() { 
         return ( 
             <React.Fragment>
                 <div className="container">
-                    <div className="pt-3">
-                        <div className="d-flex justify-content-center my-3">
+                    <div className="pt-1">
+                        <div className="d-flex justify-content-center my-2">
                           <img src="../images/login-logo.png" alt="logo"/>
                         </div>
-                        <div className="d-flex justify-content-center my-3">
+                        <div className="d-flex justify-content-center my-2">
                           <h4>
                               Create a new account to Blog or <a href="/signin" className="color-org">Sign In</a>
                           </h4>
@@ -184,21 +206,21 @@ class Signup extends Component {
 
                                   {/* first name input */}
                                   <InputPlaceholder
-                                      name="fName"
+                                      name="firstName"
                                       placeholder="First Name"
                                       type="text"
-                                      value={this.state.author.fName}
-                                      error={this.state.errors.fName}
+                                      value={this.state.author.firstName}
+                                      error={this.state.errors.firstName}
                                       onChange={this.handleChange}
                                   />
 
                                   {/* second name input */}
                                   <InputPlaceholder
-                                      name="lName"
+                                      name="lastName"
                                       placeholder="Last Name"
                                       type="text"
-                                      value={this.state.author.lName}
-                                      error={this.state.errors.lName}
+                                      value={this.state.author.lastName}
+                                      error={this.state.errors.lastName}
                                       onChange={this.handleChange}
                                   />
 
@@ -221,6 +243,17 @@ class Signup extends Component {
                                           error={this.state.errors.password}
                                           onChange={this.handleChange}
                                   />
+
+                                  <div className="form-group">
+                                    <textarea className="form-control" 
+                                        id="about" 
+                                        rows={2} 
+                                        name="about"
+                                        placeholder="A brief about you..."
+                                        value={this.state.author.about} 
+                                        onChange={this.handleChange} 
+                                    />
+                                </div>
                                   {/* submit btn */}
                                   <button type="submit" className="btn btn-orange btn-block font-weight-bold">
                                     SIGN UP

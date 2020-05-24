@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from "axios";
 
+import { getFromStorage } from '../utilities/storage';
+
+
 import { WithContext as ReactTags } from 'react-tag-input';
 import InputLabel from './inputLabel';
-import { Redirect } from 'react-router-dom';
 
 //tags delimiters codes
 const KeyCodes = {
@@ -19,24 +21,17 @@ class BlogForm extends Component {
 
     //blog form state
     state = { 
+        token: '',
         errors: {},
         blog: {
-            id: 0,
+            _id: 0,
             authorId:0,
             title: "",
             body: "",
-            tags: [],
-            img: ""
-        },
-        suggestions: [
-            { id: 'Art', text: 'Art' },
-            { id: 'Writting', text: 'Writting' },
-            { id: 'Photography', text: 'Photography' },
-            { id: 'Technology', text: 'Technology' },
-            { id: 'Color', text: 'Color' },
-            { id: 'Wrrro', text: 'Wrrro' }
-         ]
-     };
+            imgFile: "",
+            tags: []
+        }  
+    };
 
     //delete tag
     handleTagDelete = (i) => {
@@ -50,7 +45,7 @@ class BlogForm extends Component {
     //add tag
     handleTagAddition = (tag) => {
         const { blog } = this.state;
-        blog.tags = [...blog.tags, tag]
+        blog.tags = [...blog.tags, tag];
         this.setState({
          blog
         });
@@ -72,16 +67,30 @@ class BlogForm extends Component {
     }
 
     async componentDidMount() {
-        const id = this.props.formType;
-        console.log(id);
 
-        if (id !== "Add") {
-            const { data } = await axios.get("http://localhost:3000/blogs/" + id);
-            console.log(data);
+        const token = getFromStorage('user_token');
+        if (token) 
+        {
+            this.setState({token});
+            const id = this.props.formType;
+    
+            if (id !== "Add") {
+                const { data: blogData } = await axios.get("http://localhost:3000/post/" + id,
+                { headers: {"Authorization" : `${token}`} });
 
-            delete data.img;
-            this.setState({ blog: data });
+                let tags = [];
+
+                blogData.data.tags.forEach(tag => {
+                    tags.push({id: tag, text: tag});
+                });
+
+                console.log(blogData.data);
+
+                blogData.data.tags = tags;
+                this.setState({blog: blogData.data})
+            }
         }
+
     }
 
     //input change
@@ -89,37 +98,114 @@ class BlogForm extends Component {
         //Clone
         const blog = { ...this.state.blog };
         //Edit
-        blog[target.id] = target.value;
+        if (target.files) {
+            blog[target.id] = target.files[0];
+        }
+
+        else{
+            blog[target.id] = target.value;
+        }
         //Set Satate
         this.setState({ blog });
     };
 
-    //submit form
-    handleSubmit = async e => {
-        e.preventDefault();
-        //Make Object to post
-        const blog = { ...this.state.blog };
+    addNewBlog = async ({title, body, imgFile, tagsArr}) =>{
 
-        blog.authorId = this.props.currentUser.id;
+        let blogId = null;
+        let imgFormData = new FormData();
+
+        console.log(tagsArr);
+
+
+        axios.post('http://localhost:3000/post', 
+        {
+            title,
+            body,
+            tags: tagsArr
+          },
+        { headers: {"Authorization" : `${this.state.token}`} })
+        .then(res => {
+
+            blogId = res.data.data._id;
+    
+            imgFormData.set('postId', blogId);
+            imgFormData.append('userFile', imgFile);
+            const {data: img} = axios.post('http://localhost:3000/post/upload', 
+                imgFormData,
+            { headers: {'Authorization' : `${this.state.token}`} })
+            .then(res => {
+                this.props.onBlogAdd(res.data.data);
+            })
+        }).catch(err => {
+            console.log(err);
+        });
+        
+    }
+
+    editBlog = async ({id, title, body, imgFile, tagsArr}) =>{
+
+        let imgFormData = new FormData();
+        console.log(id);
+
+        console.log(imgFile);
+        axios.put('http://localhost:3000/post/'+id, 
+        {
+            title,
+            body,
+            tags: tagsArr
+          },
+        { headers: {"Authorization" : `${this.state.token}`} })
+        .then(res => {    
+            if(imgFile)
+            {
+                imgFormData.set('postId', id);
+                imgFormData.append('userFile', imgFile);
+                const {data: img} = axios.post('http://localhost:3000/post/upload', 
+                    imgFormData,
+                { headers: {'Authorization' : `${this.state.token}`} })
+                .then(res => {
+                    this.props.onBlogAdd(res.data.data);
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+
+    handleSubmit = e => {
+        e.preventDefault();
+
+        let tagsArr = [];
+
+        const {
+            _id,
+            title,
+            body,
+            imgFile,
+            tags
+        } = this.state.blog;
+
+        console.log(_id);
+
+        tags.forEach(tag => {
+            tagsArr.push(tag.text);
+        });
+        
         if (this.props.formType === "Add") {
-            delete blog.id;
             //CallBackEnd
-            const { data } = await axios.post(
-            "http://localhost:3000/blogs",
-            blog
-            );
-            //Update State
-            this.props.onBlogAdd(data);
+            this.addNewBlog({title, body, imgFile, tagsArr});
+            //State
+            this.props.onBlogAdd(this.state.blog);
         } 
         
+        //edit
         else {
             //Call BackEnd
-            const { data } = await axios.put(
-            `http://localhost:3000/blogs/${blog.id}`,
-            blog
-            );
+            let id = _id;
+            this.editBlog({id, title, body, imgFile, tagsArr});
             //State
-            this.props.onBlogUpdate(data);
+            this.props.onBlogUpdate(this.state.blog);
         }
 
         if(this.props.modal)
@@ -133,17 +219,22 @@ class BlogForm extends Component {
                 title: "",
                 body: "",
                 tags: [],
-                img: ""
+                imgFile: ""
             };
 
             this.setState({blog: blogState});
+            console.log(this.props.history);
+            // this.props.history.replace('/home');
+
         }
 
     };
 
+
     render() { 
         return ( 
             <React.Fragment>
+
                <div className={this.props.modal?"modal-dialog":"modal-dialog d-flex justify-content-center my-5 ml-3 sticky-top" }
                     role="document" style={{width: this.props.modal? "60%": "auto"}}>
                         {/* blog form */}
@@ -193,7 +284,7 @@ class BlogForm extends Component {
                                         name="tags"
                                         id="tags"
                                         tags={this.state.blog.tags}
-                                        suggestions={this.state.suggestions}
+                                        // suggestions={this.state.suggestions}
                                         placeholder="Add tags for your blog"
                                         autofocus={false}
                                         autocomplete={true}
@@ -206,14 +297,14 @@ class BlogForm extends Component {
                                 
                                 {/* blog image input */}
                                 <div className="form-group">
-                                    <label htmlFor="img">
+                                    <label htmlFor="imgFile">
                                         Upload Photo
                                     </label>
-                                    <input type="file" className="form-control-file" id="img" 
-                                        value={this.state.blog.img} 
+                                    <input type="file" className="form-control-file" name="imgFile" id="imgFile" 
+                                        // value={this.state.blog.imgFile} 
                                         onChange={this.handleChange} 
                                     />
-                                </div>                     
+                                </div>                                       
                                                     
                             </div>
                             <div className="modal-footer">
@@ -231,56 +322,6 @@ class BlogForm extends Component {
                         </div>
                     </form>
                 </div>
-
-                    {/* <div className="d-flex justify-content-center my-5 ml-3 sticky-top">
-                        <div className="card blog-form-card">
-                        <div className="card-body">
-                            <h5 className="card-title blog-form-title">Create New Blog</h5>
-                            <form onSubmit={this.handleSubmit}>
-
-                                <InputLabel
-                                    name="title"
-                                    label="Title"
-                                    type="text"
-                                    value={this.state.blog.title}
-                                    error={this.state.errors.name}
-                                    onChange={this.handleChange}
-                                />
-                                
-                                <div className="form-group">
-                                    <label htmlFor="body">Content</label>
-                                    <textarea className="form-control" id="body" rows={5} defaultValue={this.state.blog.body} onChange={this.handleChange} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="tags">Tags</label>
-                                    <ReactTags 
-                                        name="tags"
-                                        id="tags"
-                                        tags={this.state.blog.tags}
-                                        suggestions={this.state.suggestions}
-                                        placeholder="Add tags for your blog"
-                                        autofocus={false}
-                                        autocomplete={true}
-                                        allowUnique={true}
-                                        handleDelete={this.handleTagDelete}
-                                        handleAddition={this.handleTagAddition}
-                                        handleDrag={this.handleDrag}
-                                        delimiters={delimiters} />
-                                </div>
-                               
-                                <div className="form-group">
-                                    <label htmlFor="img">Upload Photo</label>
-                                    <input type="file" className="form-control-file" id="img" value={this.state.blog.img} onChange={this.handleChange} />
-                                </div>
-
-                                <button type="submit" className="btn btn-publish">Publish</button>
-                                
-                            </form>
-                        </div>
-                        </div>
-                    </div> */}
-
             </React.Fragment>
          );
     }

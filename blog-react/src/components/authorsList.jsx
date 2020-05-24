@@ -1,60 +1,82 @@
 import React from 'react';
+import axios from "axios";
+
+import { getFromStorage } from '../utilities/storage';
 
 import Navbar from './navbar';
 import AuthorCard from './authorCard';
+import { Component } from 'react';
 
-const AuthorsList = props => {
+class AuthorsList extends Component {
 
-    let authorsIds = [];
-    let authors = [];
+    state={
+        currentAuthor: {},
+        authors : []
+    };
 
-    if(props.listType === "followings" ) authorsIds = props.currentUser.followings;
-    
-    else if(props.listType === "followers") authorsIds = props.currentUser.followers;
-    
-    props.authors.forEach(author => {
-        authorsIds.forEach(id => {
-            if(author.id === id) authors.push(author);
-        });
-    });
+    async componentDidMount(){
+        const token = getFromStorage('user_token');
+        if (token) {
 
-    return ( 
-        <React.Fragment>
-                
-                {/* Navbar */}
-                <Navbar 
-                    currentUser={props.currentUser} 
-                />
+            const {data} = await axios.get("http://localhost:3000/user/info", 
+            { headers: {"Authorization" : `${token}`} });
 
-               {/* Authors List Container */}
-                <div className="container-fluid">
-                    <section className="py-5">
-                        <div className="authors-list">
+            let currentAuthor = data.data[0];
+            let authors = [];
 
-                            {/* List Title */}
-                            <div className="list-title">
-                                {props.listType === "followrs"?
-                                    "Followers":
-                                    "Followings"
-                                }
+            if(this.props.listType === "followings")
+            {
+                authors = currentAuthor.followings;
+            }
+            else if(this.props.listType === "followers")
+            {
+                authors = currentAuthor.followers;
+            }
+
+            this.setState({currentAuthor});
+            this.setState({authors});
+        }
+    }
+
+
+    render(){
+        
+        return ( 
+            <React.Fragment>
+                    
+                    {/* Navbar */}
+                    <Navbar/>
+
+                {/* Authors List Container */}
+                    <div className="container-fluid">
+                        <section className="py-5">
+                            <div className="authors-list">
+
+                                {/* List Title */}
+                                <div className="list-title">
+                                    {this.props.listType === "followers"?
+                                        "Followers":
+                                        "Followings"
+                                    }
+                                </div>
+
+                                {/* List Body */}
+                                <ul className="list-body pl-0">
+                                    {this.state.authors.map(author => 
+                                        <AuthorCard 
+                                            key={author._id}
+                                            currentAuthor={this.props.currentAuthor}
+                                            author={author}
+                                            handleFollowBtn={this.props.handleFollowBtn}
+                                        />)
+                                    }
+                                </ul>
                             </div>
-
-                            {/* List Body */}
-                            <ul className="list-body pl-0">
-                                {authors.map(author => 
-                                    <AuthorCard 
-                                        key={author.id}
-                                        currentUser={props.currentUser}
-                                        author={author}
-                                        handleFollowBtn={props.handleFollowBtn}
-                                    />)
-                                }
-                            </ul>
-                        </div>
-                    </section>
-                </div>
-            </React.Fragment>
-     );
-};
+                        </section>
+                    </div>
+                </React.Fragment>
+        );
+    }
+}
 
 export default AuthorsList;

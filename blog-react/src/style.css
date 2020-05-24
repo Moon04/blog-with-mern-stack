@@ -496,3 +496,19 @@ margin-top: 0.5rem;
 .signup-p{
     text-align: center;
 }
+
+
+.active-page{
+    background-color: #ff7043;
+    border-color: #ff7043;
+}
+
+.active-page a, .active-page a:hover{
+    background-color: transparent;
+    color: #fff;
+    border: 0;
+}
+
+.page{
+    color: #343a40;
+}

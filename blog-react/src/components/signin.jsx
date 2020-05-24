@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Joi from "joi-browser";
 import axios from "axios";
 
+import { setInStorage } from '../utilities/storage';
+
 import InputPlaceholder from './inputPlaceholder';
 
 class Signin extends Component {
@@ -73,51 +75,45 @@ class Signin extends Component {
       };
         
       //handle form submission
-      handleSubmit = async e => {
-        e.preventDefault();
+      login = ({email, password}) =>{
+          axios.post('http://localhost:3000/authenticate', {
+            email,
+            password
+          }).then(res=>{
+            setInStorage('user_token', res.data.data.token);
+            this.props.history.replace("/home");
+          }).catch(err=>{
+              console.log(err);
+          });
+      };
 
-        const author = {...this.state.author}
+      handleSubmit = (e) =>{
+        e.preventDefault(); 
     
         //Validation :
         const errors = this.validate(); 
     
         if (errors) {
-          console.log(errors);
           this.setState({ errors });
-          console.log(this.state.errors);
           return;
         };
     
         //valid
         this.setState({ errors: {} });
 
-        //Call backend
-        const { data } = await axios.get("http://localhost:3000/authors");
-        await data.forEach(element => {
-          if(element.email === author.email){
-
-            if(element.password === author.password)
-            {
-              this.props.onSignIn(element);
-              //Redirect to Home Page
-              this.props.history.replace("/home");
-              return true;
-            }
-            else{
-              console.log("password");
-            }
-          }
-        });
-
+        //call backend
+        const {email: {value: email}, password: {value: password}} = e.target;
+        this.login({email, password});
       };
-    
+
+
     render() { 
         return ( 
             <React.Fragment>
                 <div className="container">
                     <div className="mt-5 pt-5">
                         <div className="d-flex justify-content-center my-3">
-                            <img src="../images/login-logo.png" alt="logo" />
+                            <img src="../images/login-logo.png" alt="logo"/>
                         </div>
                         <div className="d-flex justify-content-center my-3">
                             <h4>

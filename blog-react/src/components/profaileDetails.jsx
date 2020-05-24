@@ -26,7 +26,7 @@ const ProfileDetails = props => {
                                         Username: 
                                     </label>
                                     <p className="font-weight-bold">
-                                        {props.author.username}
+                                        {props.author?.username}
                                     </p>
                                 </div>
                                 <div className="d-flex">
@@ -34,7 +34,7 @@ const ProfileDetails = props => {
                                         Full Name: 
                                     </label>
                                     <p className="font-weight-bold">
-                                        {props.author.fName} {props.author.lName}
+                                        {props.author?.firstName} {props.author?.lastName}
                                     </p>
                                 </div>
                                 <div className="d-flex">
@@ -42,7 +42,7 @@ const ProfileDetails = props => {
                                         Email: 
                                     </label>
                                     <p className="font-weight-bold">
-                                        {props.author.email}
+                                        {props.author?.email}
                                     </p>
                                 </div>  
                             </div>         

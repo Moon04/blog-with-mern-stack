@@ -9,43 +9,57 @@ class AuthorCard extends Component {
     };
 
     componentDidMount(){
-        let followings = this.props.currentUser.followings;
-        const following = followings.filter(following => following === this.props.author.id).length;
-        following === 0?
-        this.setState({btnText: "Follow"}):
-        this.setState({btnText: "Unfollow"});
+        // let followings = this.props.currentAuthor.followings;
+        // const followingsCount = followings.filter(following => following === this.props.author.id).length;
+        // followingsCount === 0?
+        // this.setState({btnText: "Follow"}):
+        // this.setState({btnText: "Unfollow"});
     }
 
     handleFollowBtn = async () =>{
 
-        let currenrUser = this.props.currentUser;
+        let currenrAuthor = this.props.currenrAuthor;
+        let resData = null;
 
         if(this.state.btnText === "Follow")
         {
             //Clone
             const author = this.props.author;
             //Edit
-            currenrUser.followings.unshift(author.id);
+            currenrAuthor.followings.unshift(author._id);
             //setstate
             this.setState({btnText: "Unfollow"});
+
+            const { data } = await axios.post(
+            `http://localhost:3000/user/follow`, author._id
+            );
+            
+            resData = data.data;
+
         }
         else
         {
             //clone --> edit
             const author = this.props.author;
-            const followings = currenrUser.followings.filter(following => following !== author.id);
-            currenrUser.followings = followings;
+            const followings = currenrAuthor.followings.filter(following => following !== author.id);
+            currenrAuthor.followings = followings;
             this.setState({btnText: "Follow"});
+
+            const { data } = await axios.post(
+            `http://localhost:3000/user/unfollow`, author._id
+            );
+
+            resData = data.data;
         }
 
         //call backend
-        const { data } = await axios.put(
-        `http://localhost:3000/authors/${this.props.currentUser.id}`,
-        currenrUser
-        );
+        // const { data } = await axios.put(
+        // `http://localhost:3000/authors/${this.props.currentUser.id}`,
+        // currenrUser
+        // );
 
         //State
-        this.props.handleFollowBtn(data);
+        this.props.handleFollowBtn(resData);
     };
 
     render(){
@@ -57,7 +71,7 @@ class AuthorCard extends Component {
                         <p>
                             <b>
                                 {/* Follower/Following Username */}
-                                <Link to={"/authorprofile/"+this.props.author.id}>
+                                <Link to={"/authorprofile/"+this.props.author._id}>
                                     {this.props.author.username}
                                 </Link>
                             </b>

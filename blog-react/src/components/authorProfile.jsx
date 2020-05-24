@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { toast } from "react-toastify";
 
+import { getFromStorage } from '../utilities/storage';
+
 import Navbar from './navbar';
 import AuthorBanner from './authorBanner';
 import AuthorInfo from './authorInfo';
@@ -14,49 +16,121 @@ import ProfileDetails from './profaileDetails';
 class AuthorProfile extends Component {
 
   state={
+    token: '',
     formType: null,
-    detailsModalStatus: false
+    detailsModalStatus: false,
+    author: null, 
+    currentAuthor: null,
+    blogs: [],
+    activePage: 1,
+    blogsMetadata: null,
+    blogAdded: false,
+    blogDeleted: false,
+    blogEdited: false
   };
 
-  //handle blog form type -add/edit- function
-  handleFormType = (type) =>{
-    if(type === "Add") this.setState({formType: "Add"});
-    else if(type !== null) this.setState({formType: type});
-    else this.setState({formType: "null"});
-  };
 
-  //close blog form modal
-  closeForm = () =>{
-    this.setState({formType: null});
-  };
+  getAuthorBlogs = async () =>{
+    const {data: blogs}= await axios.get("http://localhost:3000/post/userposts/"+this.state.author?._id+`?pageNumber=${this.state.activePage-1}`, 
+        { headers: {"Authorization" : `${this.state.token}`} });
+        
+        this.setState({blogs: blogs.data});
+        this.setState({blogsMetadata: blogs.metadata});
+  }
 
-  //handele profile details modal status
-  handeDetailsModal = () => {
-    let status = this.state.detailsModalStatus;
-    status = !status;
-    this.setState({detailsModalStatus: status})
-    console.log(status);
-  };
+  async componentDidMount(){
+    const token = getFromStorage('user_token');
+    if (token) {
 
-  //close profile details modal
-  closeDetailsModal = () =>{
-    this.setState({detailsModalStatus: false});
-  };
+      const {data: currentAuthor} = await axios.get("http://localhost:3000/user/info", 
+      { headers: {"Authorization" : `${token}`} });
+      
+      this.setState({token});
+      this.setState({currentAuthor: currentAuthor.data[0]})
 
-  //handle blog delete function
+
+       if(this.props.template === "myprofile")
+       {
+          this.setState({author: this.state.currentAuthor});
+       }
+       else
+       {
+          const {data: author} = await axios.get("http://localhost:3000/user/info/"+this.props.match.params.id, 
+          { headers: {"Authorization" : `${token}`} });
+          
+          this.setState({author: author.data[0]})
+        }
+
+        this.getAuthorBlogs(); 
+       
+      }
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+      if (this.state.activePage !== prevState.activePage) {
+        this.getAuthorBlogs(); 
+      }
+      else if (this.state.blogDeleted !== prevState.blogDeleted) {
+        this.getAuthorBlogs(); 
+      }
+      else if (this.state.blogAdded !== prevState.blogAdded) {
+        this.getAuthorBlogs(); 
+      }
+      else if (this.state.blogEdited !== prevState.blogEdited) {
+        this.getAuthorBlogs(); 
+      }
+    }
+
+    //handle page change
+    handlePageChange = page => {
+      this.setState({ activePage: page });
+    };
+    
+    //handle blog form type -add/edit- function
+    handleFormType = (type) =>{
+      if(type === "Add") this.setState({formType: "Add"});
+      else if(type !== null) this.setState({formType: type});
+      else this.setState({formType: "null"});
+    };
+    
+    //close blog form modal
+    closeForm = () =>{
+      this.setState({formType: null});
+    };
+    
+    //handele profile details modal status
+    handeDetailsModal = () => {
+      let status = this.state.detailsModalStatus;
+      status = !status;
+      this.setState({detailsModalStatus: status})
+      console.log(status);
+    };
+    
+    //close profile details modal
+    closeDetailsModal = () =>{
+      this.setState({detailsModalStatus: false});
+    };
+
+    //handle blog delete function
   handleBlogDelete = async blog => {
-      //Copy Orignal Data
-      const orignalData = [...this.props.blogs];
+    //Copy Orignal Data
+    // const orignalData = [...this.props.blogs];
   
-      //State
-      this.props.onBlogDelete(blog);
-  
-      try {
-        //Call BackEnd
-        const { data } = await axios.delete(
-          `http://localhost:3000/blogs/${blog.id}`
-        );
-        console.log(data);
+    //State
+    this.props.onBlogDelete(blog);
+    
+    try {
+
+      //Call BackEnd
+      const { data } = await axios.delete(
+        `http://localhost:3000/post/${blog._id}`,
+        { headers: {"Authorization" : `${this.state.token}`} });
+
+        this.setState({blogDeleted: !this.state.blogDeleted})
+
+        //State
+        this.props.onBlogDelete(blog);
+        
       } catch (error) {
         //Print Error
         if (error.response && error.response.status === 404) {
@@ -65,46 +139,46 @@ class AuthorProfile extends Component {
           toast("Something went wrong!");
         }
         //Restore Data
-        this.props.onRestoreBlogs(orignalData);
+        // this.props.onRestoreBlogs(orignalData);
       }
     };
 
-  render() {
-      
-      let author = null;
-      let blogs = this.props.blogs;
-      
-      if( this.props.currentUser !== null &&  this.props.template === "myprofile" )
-      {
-          author =  this.props.authors.filter(a => a.id ===  this.props.currentUser.id)[0];
-      }
-  
-      else{
-          author =  this.props.authors.filter(a => a.id === Number( this.props.match.params.id))[0];
-      }
-      
-      blogs =  this.props.blogs.filter(blog => blog.authorId === author.id);
-  
-  
-  
+    handleBlogAdded = blog =>{
+      this.setState({blogAdded: !this.state.blogAdded});
+      this.props.onBlogAdd(blog);
+    }
+
+    handleBlogEdited = blog =>{
+      this.setState({blogEdited: !this.state.blogEdited});
+      this.props.onBlogUpdate(blog);
+    }
+
+
+    //pagination
+    handlePageChange = page=>{
+      this.setState({activePage: page});
+    };
+    
+    render() {
+
+      // return "profile";     
       return ( 
-          <React.Fragment>
+        <React.Fragment>
                   
               {/* Navbar */}
-              <Navbar 
-                currentUser={this.props.currentUser} 
-              />
+              <Navbar/>
   
               {/* Author Banner */}
               <AuthorBanner 
-                author={author}
-              />
+                author={this.state.author}
+                currentAuthor={this.state.currentAuthor}
+                />
   
               {/* Author Info ==> Author<>Mine */}
               <AuthorInfo 
-                author={author} 
-                blogs={this.props.blogs}
-                currentUser={this.props.currentUser}
+                author={this.state.author} 
+                blogsCount={this.state.blogsMetadata?.postsCount}
+                currentAuthor={this.state.currentAuthor}
                 handleFormType={this.handleFormType}
                 handeDetailsModal={this.handeDetailsModal}
                 handleFollowBtn={this.props.handleFollowBtn}
@@ -116,19 +190,18 @@ class AuthorProfile extends Component {
   
                       {/* About Me */}
                       <AboutMe 
-                        about={author.about}
+                        about={this.state.author?.about}
                       />
   
                       {/* Author Blogs */}
                       <div className="col-md-8">
                           <div className="d-flex align-items-center my-5 flex-column">
                               {/* Blog Card */}
-                              {blogs.map(blog => 
+                              {this.state.blogs?.map(blog => 
                                   <Blog 
-                                    key={blog.id} 
+                                    key={blog._id} 
                                     blog={blog} 
-                                    authors={this.props.authors} 
-                                    currentUser={this.props.currentUser}
+                                    currentAuthor={this.state.currentAuthor}
                                     onBlogDelete={this.handleBlogDelete}
                                     handleFormType={this.handleFormType}
                                     handleFollowBtn={this.props.handleFollowBtn}
@@ -137,7 +210,14 @@ class AuthorProfile extends Component {
                           </div>
                           
                           {/* pagination */}
-                          <Pagination/>
+                          {
+                            this.state.blogsMetadata?.pages>1 &&
+                            <Pagination
+                            activePage={this.state.activePage}
+                            pagesCount={this.state.blogsMetadata?.pages}
+                            onPageChange={this.handlePageChange}
+                            />
+                          }
                           
                       </div>
                                 
@@ -152,10 +232,9 @@ class AuthorProfile extends Component {
                             formType={this.state.formType}
                             modal={true}
                             closeForm={this.closeForm}
-                            currentUser={this.props.currentUser}
-                            onBlogAdd={this.props.onBlogAdd}
-                            onBlogUpdate={this.props.onBlogUpdate}
-                            onRestoreBlogs={this.props.onRestoreBlogs}
+                            currentAuthor={this.state.currentAuthor}
+                            onBlogAdd={this.handleBlogAdded}
+                            onBlogUpdate={this.handleBlogEdited}
                           />
                         }
                       </div>
@@ -163,7 +242,7 @@ class AuthorProfile extends Component {
                       <ProfileDetails
                         openDetailsModal={this.state.detailsModalStatus}
                         closeDetailsModal={this.closeDetailsModal}
-                        author={author}
+                        author={this.state.author}
                       />
 
                   </div>

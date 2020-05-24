@@ -1,64 +1,101 @@
-import React from 'react';
+import React, { Component } from 'react';
+import axios from 'axios';
+
+import { getFromStorage } from '../utilities/storage';
 
 import Navbar from './navbar';
 import Blog from './blog';
 import Pagination from './pagination';
 
-const FollowingsBlogs = props => {
+class FollowingsBlogs extends Component {
 
-    let blogs = [];
+    state={
+        currentAuthor: {},
+        blogs: [],
+        activePage: 1,
+        blogsMetadata: null
+    };
 
-    console.log(props.currentUser);
+    getFollowingBlogs = async () =>{
+        const {data: blogs} = await axios.get(`http://localhost:3000/post/followingsposts?pageNumber=${this.state.activePage-1}`, 
+            { headers: {"Authorization" : `${this.state.token}`} });
+            this.setState({blogs: blogs.data});
+            this.setState({blogsMetadata: blogs.metadata});
+    }
 
-    let followingsIds = props.currentUser.followings;
+    async componentDidMount(){
+        const token = getFromStorage('user_token');
+        if (token) {
+            
+            const {data: currentAuthor} = await axios.get("http://localhost:3000/user/info", 
+            { headers: {"Authorization" : `${token}`} });
 
-    props.blogs.forEach(blog => {
-        followingsIds.forEach(id => {
-            if (blog.authorId === id) {
-                blogs.push(blog);
-            }
-        });
-    });
+            this.setState({currentAuthor: currentAuthor.data[0]})
+            
+            this.getFollowingBlogs();
+            
+        }
+    }
 
-    return ( 
-        <React.Fragment>
+    async componentDidUpdate(prevProps, prevState) {
+        if (this.state.activePage !== prevState.activePage) {
+          this.getFollowingBlogs(); 
+        }
+      }
+  
 
-            {/* Navbar */}
-            <Navbar 
-                currentUser={props.currentUser} 
-            />
+    //pagination
+    handlePageChange = page=>{
+        this.setState({activePage: page});
+      };
 
-           {/* Banner */}
-           <div className="banner">
-                <img src="../images/banner.jpg" className="banner-img" alt="banner"/>
-            </div>
+    render(){
+        
+        return ( 
+            <React.Fragment>
 
-            {/* Home Container */}
-            <div className="container-fluid">
-                <div className="justify-content-center d-flex">
+                {/* Navbar */}
+                <Navbar/>
 
-                    {/* All Authors Blogs */}
-                        <div className="d-flex align-items-center my-5 flex-column">
-
-                            {/* Blog Card */}   
-                            {blogs.map(blog => 
-                                <Blog 
-                                    key={blog.id} 
-                                    blog={blog} 
-                                    authors={props.authors} 
-                                    currentUser={props.currentUser} 
-                                    handleFollowBtn={props.handleFollowBtn}
-                                />)
-                            }
-                        </div>
+            {/* Banner */}
+            <div className="banner">
+                    <img src="../images/banner.jpg" className="banner-img" alt="banner"/>
                 </div>
 
-                {/* pagination */}
-                <Pagination/>
-                
-            </div>
-        </React.Fragment>
-     );
-};
+                {/* Home Container */}
+                <div className="container-fluid">
+                    <div className="justify-content-center d-flex">
+
+                        {/* All Authors Blogs */}
+                            <div className="d-flex align-items-center my-5 flex-column">
+
+                                {/* Blog Card */}   
+                                {this.state.blogs?.map(blog => 
+                                    <Blog 
+                                        key={blog._id}
+                                        from="followingsblogs"
+                                        blog={blog} 
+                                        currentAuthor={this.state.currentAuthor} 
+                                        handleFollowBtn={this.props.handleFollowBtn}
+                                    />)
+                                }
+                            </div>
+                    </div>
+
+                    {/* pagination */}
+                    {
+                        this.state.activePage>1 &&
+                        <Pagination
+                        activePage={this.state.activePage}
+                        pagesCount={this.state.blogsMetadata.pages}
+                        onPageChange={this.handlePageChange}
+                        />
+                    }
+                    
+                </div>
+            </React.Fragment>
+        );
+    }
+}
  
 export default FollowingsBlogs;
