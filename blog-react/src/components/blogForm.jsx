@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import { WithContext as ReactTags } from 'react-tag-input';
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
-import { getFromStorage } from '../utilities/storage';
-
-
-import { WithContext as ReactTags } from 'react-tag-input';
 import InputLabel from './inputLabel';
+import { getFromStorage } from '../utilities/storage';
 
 //tags delimiters codes
 const KeyCodes = {
@@ -22,7 +21,6 @@ class BlogForm extends Component {
     //blog form state
     state = { 
         token: '',
-        errors: {},
         blog: {
             _id: 0,
             authorId:0,
@@ -32,39 +30,6 @@ class BlogForm extends Component {
             tags: []
         }  
     };
-
-    //delete tag
-    handleTagDelete = (i) => {
-        const { blog } = this.state;
-        blog.tags = blog.tags.filter((tag, index) => index !== i);
-        this.setState({
-            blog
-        });
-    }
-
-    //add tag
-    handleTagAddition = (tag) => {
-        const { blog } = this.state;
-        blog.tags = [...blog.tags, tag];
-        this.setState({
-         blog
-        });
-    }
-
-    //drag tags
-    handleDrag(tag, currPos, newPos) {
-        const tags = [...this.state.blog.tags];
-        const newTags = tags.slice();
- 
-        newTags.splice(currPos, 1);
-        newTags.splice(newPos, 0, tag);
- 
-        let blog = this.state.blog;
-        blog.tags = newTags
-
-        // re-render
-        this.setState({ blog });
-    }
 
     async componentDidMount() {
 
@@ -92,37 +57,69 @@ class BlogForm extends Component {
         }
 
     }
+    
+     //add tag
+     handleTagAddition = (tag) => {
+        const { blog } = this.state;
+        blog.tags = [...blog.tags, tag];
+        this.setState({
+         blog
+        });
+    }
+    
+    //drag tags
+    handleDrag(tag, currPos, newPos) {
+        const tags = [...this.state.blog.tags];
+        const newTags = tags.slice();
+ 
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+ 
+        let blog = this.state.blog;
+        blog.tags = newTags
+
+        // re-render
+        this.setState({ blog });
+    }
+
+    //delete tag
+    handleTagDelete = (i) => {
+        const { blog } = this.state;
+        blog.tags = blog.tags.filter((tag, index) => index !== i);
+        this.setState({
+            blog
+        });
+    }
 
     //input change
     handleChange = ({ target }) => {
         //Clone
         const blog = { ...this.state.blog };
+        const errors = { ...this.state.errors };
+
         //Edit
         if (target.files) {
             blog[target.id] = target.files[0];
         }
-
         else{
             blog[target.id] = target.value;
         }
         //Set Satate
-        this.setState({ blog });
+        this.setState({ blog, errors });
     };
-
+   
+    //add blog backend
     addNewBlog = async ({title, body, imgFile, tagsArr}) =>{
 
         let blogId = null;
         let imgFormData = new FormData();
-
-        console.log(tagsArr);
-
 
         axios.post('http://localhost:3000/post', 
         {
             title,
             body,
             tags: tagsArr
-          },
+        },
         { headers: {"Authorization" : `${this.state.token}`} })
         .then(res => {
 
@@ -135,25 +132,29 @@ class BlogForm extends Component {
             { headers: {'Authorization' : `${this.state.token}`} })
             .then(res => {
                 this.props.onBlogAdd(res.data.data);
-            })
+            }).catch(err=>{
+                toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
+            });
         }).catch(err => {
-            console.log(err);
+            if (err.response.status === 422) {
+                toast(err.response.data, {type: "error", position: "top-left"})
+            }
+            else toast("Connection Error", {type: "error", position: "top-left"})
         });
         
-    }
+    };
 
+    //edit blog backend
     editBlog = async ({id, title, body, imgFile, tagsArr}) =>{
 
         let imgFormData = new FormData();
-        console.log(id);
 
-        console.log(imgFile);
         axios.put('http://localhost:3000/post/'+id, 
         {
             title,
             body,
             tags: tagsArr
-          },
+        },
         { headers: {"Authorization" : `${this.state.token}`} })
         .then(res => {    
             if(imgFile)
@@ -165,19 +166,24 @@ class BlogForm extends Component {
                 { headers: {'Authorization' : `${this.state.token}`} })
                 .then(res => {
                     this.props.onBlogAdd(res.data.data);
+                }).catch(err=>{
+                    toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
                 });
             }
         }).catch(err => {
-            console.log(err);
+            if (err.response.status === 422) {
+                toast(err.response.data, {type: "error", position: "top-left"})
+            }
+            else toast("Connection Error", {type: "error", position: "top-left"})
         });
-    }
-
-
+    };
+    
+    //handle form submit
     handleSubmit = e => {
         e.preventDefault();
-
+ 
         let tagsArr = [];
-
+        
         const {
             _id,
             title,
@@ -186,12 +192,11 @@ class BlogForm extends Component {
             tags
         } = this.state.blog;
 
-        console.log(_id);
-
         tags.forEach(tag => {
             tagsArr.push(tag.text);
         });
         
+        //add
         if (this.props.formType === "Add") {
             //CallBackEnd
             this.addNewBlog({title, body, imgFile, tagsArr});
@@ -223,13 +228,9 @@ class BlogForm extends Component {
             };
 
             this.setState({blog: blogState});
-            console.log(this.props.history);
-            // this.props.history.replace('/home');
-
         }
 
     };
-
 
     render() { 
         return ( 
@@ -237,6 +238,7 @@ class BlogForm extends Component {
 
                <div className={this.props.modal?"modal-dialog":"modal-dialog d-flex justify-content-center my-5 ml-3 sticky-top" }
                     role="document" style={{width: this.props.modal? "60%": "auto"}}>
+                    <ToastContainer />
                         {/* blog form */}
                     <form onSubmit={this.handleSubmit} className="w-100">
                         <div className="modal-content">
@@ -259,8 +261,8 @@ class BlogForm extends Component {
                                     name="title"
                                     label="Title"
                                     type="text"
+                                    required={true}
                                     value={this.state.blog.title}
-                                    error={this.state.errors.name}
                                     onChange={this.handleChange}
                                 />
                             
@@ -270,6 +272,7 @@ class BlogForm extends Component {
                                         Content
                                     </label>
                                     <textarea className="form-control" id="body" rows={5} 
+                                        required={true}
                                         value={this.state.blog.body} 
                                         onChange={this.handleChange} 
                                     />
@@ -300,8 +303,8 @@ class BlogForm extends Component {
                                     <label htmlFor="imgFile">
                                         Upload Photo
                                     </label>
-                                    <input type="file" className="form-control-file" name="imgFile" id="imgFile" 
-                                        // value={this.state.blog.imgFile} 
+                                    <input type="file" className="form-control-file" 
+                                        name="imgFile" id="imgFile" required={true}
                                         onChange={this.handleChange} 
                                     />
                                 </div>                                       

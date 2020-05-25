@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { getFromStorage } from '../utilities/storage';
+import { removeFromStorage } from './../utilities/storage';
 
 class AuthorSubNav extends Component {
 
@@ -15,15 +16,18 @@ class AuthorSubNav extends Component {
     async componentDidMount(){
         const token = getFromStorage('user_token');
         if (token) {
-            const {data} = await axios.get("http://localhost:3000/user/info", 
-            { headers: {"Authorization" : `${token}`} });
+            try {
+                const {data} = await axios.get("http://localhost:3000/user/info", 
+                { headers: {"Authorization" : `${token}`} });
 
-            this.setState({author: data.data[0]})
+                this.setState({author: data.data[0]})
+            } catch (error) {
+                this.props.history.replace('/notfound');
+            }
         }
     }
 
     handleChange = ({ target }) => {
-        
         //Set Satate
         this.setState({ searchTerm: target.value });
       };
@@ -31,6 +35,10 @@ class AuthorSubNav extends Component {
     handleSearchInput = e=>{
         e.preventDefault();
         this.props.handleSearchInput(this.state.searchTerm)
+    }
+
+    handleLogoutBtn = () =>{
+        removeFromStorage('user_token');
     }
 
     //open author profile dropdown function
@@ -44,7 +52,6 @@ class AuthorSubNav extends Component {
     render(){
         return ( 
             <React.Fragment>
-
                     {/* Search Input */}
                     <form className="form-inline my-2 my-lg-0 mr-2 search-form" onSubmit={this.handleSearchInput}>
                         <input className="form-control search-input" type="search" id="searchTerm" 
@@ -72,7 +79,7 @@ class AuthorSubNav extends Component {
                         </li>
                         <hr />
                         <li>
-                            <Link to="/signin">
+                            <Link to="/signIn" onClick={this.handleLogoutBtn}>
                                 <i className="fas fa-power-off mr-2" />
                                 Log Out
                             </Link>

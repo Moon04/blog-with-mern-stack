@@ -512,3 +512,10 @@ margin-top: 0.5rem;
 .page{
     color: #343a40;
 }
+
+.no-followings, .no-blogs{
+    font-size: 145%;
+    padding-top: 5%;
+    font-weight: 700;
+    text-align: center;
+}

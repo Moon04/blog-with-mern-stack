@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import { getFromStorage } from '../utilities/storage';
-
 
 class Blog extends Component {
 
@@ -16,7 +16,6 @@ class Blog extends Component {
     };
 
     async componentDidMount(){
-
         const token = getFromStorage('user_token');
         let blogUserId = this.props.blog.userId;
 
@@ -30,15 +29,15 @@ class Blog extends Component {
             const {data} = await axios.get("http://localhost:3000/user/info/"+blogUserId, 
             { headers: {"Authorization" : `${token}`} });
 
-          this.setState({token});
-          this.setState({blogAuthor: data.data[0]})
+            this.setState({token});
+            this.setState({blogAuthor: data.data[0]})
 
-          let followings = this.props.currentAuthor?.followings;
-          
-          const following = followings?.filter(following => following === blogUserId).length;
-          following === 0 ?
-          this.setState({btnText: "Follow"}):
-          this.setState({btnText: "Unfollow"});
+            let followings = this.props.currentAuthor?.followings;
+            
+            const following = followings?.filter(following => following === blogUserId).length;
+            following === 0 ?
+            this.setState({btnText: "Follow"}):
+            this.setState({btnText: "Unfollow"});
           
         }
         else{
@@ -61,53 +60,79 @@ class Blog extends Component {
     }
 
     //handle follow btn function
-    handleFollowBtn = async () =>{
-
+    handleFollowBtn = () =>{
         let currentAuthor = this.props.currentAuthor;
         let userId = '';
         let resData = null;
 
         if(this.state.btnText === "Follow")
         {
-            console.log(currentAuthor);
-            //Clone
             const author = this.state.blogAuthor;
-            //Edit
-            currentAuthor.followings.unshift(author._id);
-            //setstate
-            this.setState({btnText: "Unfollow"});
-
             userId = author._id;
-            const { data } = await axios.post(
+
+            axios.post(
                 'http://localhost:3000/user/follow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
-                );
+            ).then(res=>{
 
-            resData = data.data;
+                //Edit
+                currentAuthor.followings.unshift(author._id);
+                //setstate
+                this.setState({btnText: "Unfollow"});
+    
+                resData = res.data.data;
+                //State
+                 this.props.handleFollowBtn(resData);
+            }).catch(err => {
+                if (err.response.status === 404) {
+                    //no such user
+                    toast(err.response.data, {type:"error"});
+                }
+                else if (err.response.status === 417) {
+                    //you can't follow yourself
+                    toast(err.response.data, {type:"error"});
+                }
+                else if (err.response.status === 409) {
+                    //already follow
+                    toast(err.response.data, {type:"dark"});
+                }
+                else toast("Connection Error", {type:"error"});
+            });
+
         }
         else
         {
-            //clone --> edit
             const author = this.state.blogAuthor;
-            const followings = currentAuthor.followings.filter(following => following !== author._id);
-            currentAuthor.followings = followings;
-            this.setState({btnText: "Follow"});
-
             userId = author._id;
-            const { data } = await axios.post(
+
+            axios.post(
                 'http://localhost:3000/user/unfollow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
-                );
+            ).then(res => {
+                const followings = currentAuthor.followings.filter(following => following !== author._id);
+                currentAuthor.followings = followings;
+                this.setState({btnText: "Follow"});
+                resData = res.data.data;
+                //State
+                this.props.handleFollowBtn(resData);
+            }).catch(err=>{
+                if (err.response.status === 404) {
+                    //no such user
+                    toast(err.response.data, {type:"error"});
+                }
+                else if (err.response.status === 409) {
+                    //already follow
+                    toast(err.response.data, {type:"dark"});
+                }
+                else toast("Connection Error", {type:"error"});
+            });
 
-            resData = data.data;
         }
-
-        //State
-        this.props.handleFollowBtn(resData);
     };
 
+    //generate unique id
     generateKey = tag => {
         return `${ tag }_${ Math.random() }`;
     };
@@ -115,7 +140,9 @@ class Blog extends Component {
     render(){
 
         return ( 
+            
             <React.Fragment>
+                <ToastContainer />
                 <div className="card blog-card mb-4">
                     {this.state.token && this.props.currentAuthor?._id === this.state.blogAuthor?._id &&
                         <div className="blog-crud">
@@ -173,7 +200,6 @@ class Blog extends Component {
                                 )
                             }
                         </div>
-
                     </div>
                 </div>
             </React.Fragment>

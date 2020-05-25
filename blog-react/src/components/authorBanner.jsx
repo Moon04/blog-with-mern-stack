@@ -1,18 +1,14 @@
 import React from 'react';
-
 import { Link } from 'react-router-dom';
 
 const AuthorBanner = props => {
 
     let profileLink = "#";
 
-    if(props.currentAuthor?._id === props.author?._id)
-    { profileLink = "/myprofile";
-    }
-    else{
-     profileLink = "/authorprofile/"+props.author?._id;
-    }
-
+    if(props.currentAuthor?._id === props.author?._id) profileLink = "/myprofile";
+    
+    else profileLink = "/authorprofile/"+props.author?._id;
+    
     return ( 
         <React.Fragment>
             <div className="banner">
@@ -25,7 +21,7 @@ const AuthorBanner = props => {
                     </Link>
 
                     {/* Author Name */}
-                    <div className="info-body ml-3 py-5">
+                    <div className="info-body ml-3 pt-3">
                         <Link to={profileLink}>
                             {props.author?.username}
                         </Link>

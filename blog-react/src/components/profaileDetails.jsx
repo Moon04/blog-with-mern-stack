@@ -3,6 +3,7 @@ import React from 'react';
 const ProfileDetails = props => {
 
     return ( 
+        
         <React.Fragment>
             <div className={props.openDetailsModal? "modal":"modal fade"} 
                 style={{display: props.openDetailsModal? "block":"none"}}

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import { getFromStorage } from '../utilities/storage';
-
 import AuthorSubNav from './aurhorSubNav';
 import AnonymousSubNav from './anonymousSubNav';
+import { getFromStorage } from '../utilities/storage';
 
 class Navbar extends Component {
 
@@ -19,6 +18,7 @@ class Navbar extends Component {
 
     render(){
         return ( 
+            
             <React.Fragment>
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                     <div className="container">

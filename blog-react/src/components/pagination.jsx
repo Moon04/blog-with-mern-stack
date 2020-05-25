@@ -5,11 +5,13 @@ const Pagination = props => {
 
     let pages = [];
 
-    for (let index = 1; index <= props.pagesCount; index++) {
+    for (let index = 1; index <= props.pagesCount; index++) 
+    {
       pages.push(index);
     }
 
     return (
+      
       <nav aria-label="...">
         <ul className="pagination floatRight" style={{float: "right"}}>
           {pages.map(page => (
@@ -32,6 +34,5 @@ const Pagination = props => {
       </nav>
     );
   };
-  
  
 export default Pagination;

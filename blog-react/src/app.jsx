@@ -2,16 +2,14 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-import { getFromStorage } from './utilities/storage';
-
-
-import Home from './components/home';
 import Signin from './components/signin';
 import Signup from './components/signup';
+import Home from './components/home';
 import AuthorProfile from './components/authorProfile';
 import AuthorsList from './components/authorsList';
-import NotFound from './components/notFound';
 import FollowingsBlogs from './components/followingsBlogs';
+import NotFound from './components/notFound';
+import { getFromStorage } from './utilities/storage';
 
 class App extends React.Component {
 
@@ -20,18 +18,14 @@ class App extends React.Component {
         authors: [],
         blogs: [],
         blogsMetadata: 0,
-        activePage: 1
+        activePage: 1,
+        follow: true
     };
 
-    getAuthorsBlogs = async () =>{
-        const { data: blogsData } = await axios.get(`http://localhost:3000/basicdata/posts?pageNumber=${this.state.activePage-1}`);
-        await this.setState({ blogs: blogsData.data});
-        await this.setState({ blogsMetadata: blogsData.metadata });
-    }
-
+    
     // Get: authors and blogs from database
     async componentDidMount() {
-
+        
         const token = getFromStorage('user_token');
         if (token) 
         {
@@ -39,17 +33,26 @@ class App extends React.Component {
         }
         const { data: authorsData } = await axios.get("http://localhost:3000/basicdata/users");
         await this.setState({ authors: authorsData.data });
-
+        
         this.getAuthorsBlogs();
     }
-
+    
     async componentDidUpdate(prevProps, prevState) {
         if (this.state.activePage !== prevState.activePage) {
-          this.getAuthorsBlogs(); 
+            this.getAuthorsBlogs(); 
         }
-      }
-  
-    
+        else  if (this.state.follow !== prevState.follow) {
+            this.getAuthorsBlogs(); 
+            }
+    }
+        
+    //get authors from backend
+    getAuthorsBlogs = async () =>{
+        const { data: blogsData } = await axios.get(`http://localhost:3000/basicdata/posts?pageNumber=${this.state.activePage-1}`);
+        await this.setState({ blogs: blogsData.data});
+        await this.setState({ blogsMetadata: blogsData.metadata });
+    };
+
     //handle sign up form
     handleAuthorRegister = author => {
         //Clone
@@ -60,10 +63,16 @@ class App extends React.Component {
         this.setState({ authors });
     };
 
-    //handle page change
-    handlePageChange = page => {
-        this.setState({ activePage: page });
-      };
+    //handle search btn
+    handleSearchBtn = async term =>{
+        if(term)
+        {
+            const { data: blogsData } = await axios.get(`http://localhost:3000/post/search/"${term}"?pageNumber=${this.state.activePage-1}`,
+            { headers: {"Authorization" : `${this.state.token}`} });
+            await this.setState({ blogs: blogsData.data});
+            await this.setState({ blogsMetadata: blogsData.metadata });
+        }
+    };
 
     //handle add new blog
     handleBlogAdd = blog => {
@@ -96,29 +105,12 @@ class App extends React.Component {
 
     //handle follow btn
     handleFollowBtn = author => {
-        //Clone
-        const authors = [...this.state.authors];
-        //Edit
-        const index = authors.findIndex(a => a._id === author._id);
-        authors[index] = author;
-        //Set State
-        this.setState({ authors });
+        this.setState({follow: !this.state.follow});
     };
 
-    //handle search btn
-    handleSearchBtn = async term =>{
-        if(term)
-        {
-            const { data: blogsData } = await axios.get(`http://localhost:3000/post/search/"${term}"?pageNumber=${this.state.activePage-1}`,
-            { headers: {"Authorization" : `${this.state.token}`} });
-            await this.setState({ blogs: blogsData.data});
-            await this.setState({ blogsMetadata: blogsData.metadata });
-        }
-    }
-
-    //pagination
-    handlePageChange = page=>{
-        this.setState({activePage: page});
+     //handle page change
+     handlePageChange = page => {
+        this.setState({ activePage: page });
       };
 
     render() {
