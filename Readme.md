@@ -1,2 +1,2 @@
-# blog-with-mern-stack (React Repo)
+# blog-with-mern-stack
 blog using reactjs and nodejs
