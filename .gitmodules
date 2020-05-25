@@ -1,0 +1,4 @@
+[submodule "blog-nodejs"]
+	path = iti-blog
+	url = https://github.com/HussienAbdelaal/iti-blog.git
+	branch = blog-nodejs
