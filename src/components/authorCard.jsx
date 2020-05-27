@@ -86,7 +86,7 @@ class AuthorCard extends Component {
             userId = author;
 
             axios.post(
-            process.env.env.REACT_APP_BACKEND_URL+'/user/unfollow', 
+            process.env.REACT_APP_BACKEND_URL+'/user/unfollow', 
             { userId },
             { headers: {"Authorization" : `${this.state.token}`} }
             ).then(res=>{
