@@ -133,13 +133,13 @@ class BlogForm extends Component {
             { headers: {'Authorization' : `${this.state.token}`} })
             .then(res => {
                 this.props.onBlogAdd(res.data.data);
-                return;
             }).catch(err=>{
                 toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
             });
            }
-           this.props.onBlogAdd(res.data.data);
-
+           else{
+               this.props.onBlogAdd(res.data.data);
+           }
         }).catch(err => {
             if (err.response.status === 422) {
                 toast(err.response.data, {type: "error", position: "top-left"})
@@ -171,12 +171,13 @@ class BlogForm extends Component {
                 { headers: {'Authorization' : `${this.state.token}`} })
                 .then(res => {
                     this.props.onBlogUpdate(res.data.data);
-                    return
                 }).catch(err=>{
                     toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
                 });
             }
-            this.props.onBlogUpdate(res.data.data);
+            else{
+                this.props.onBlogUpdate(res.data.data);
+            }
         }).catch(err => {
             if (err.response.status === 422) {
                 toast(err.response.data, {type: "error", position: "top-left"})
