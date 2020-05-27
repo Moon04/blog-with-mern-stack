@@ -1,2 +1,1 @@
-# blog-nodejs
-blogging website using nodejs
+# blog with mern stack (nodejs repo)
