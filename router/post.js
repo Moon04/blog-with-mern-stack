@@ -42,6 +42,7 @@ router.post('/upload', async (req, res) => {
     res.json({data: post});
 });
 
+//search by title
 router.get('/search/:term', async (req, res) => {
     const schema = Joi.object({
         pageSize: Joi.number().integer().positive().max(100).default(10),

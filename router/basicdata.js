@@ -21,8 +21,6 @@ router.get('/users', async (req, res) => {
         return res.status(404).json(`there's only ${pages} pages with ${value.pageSize} records per page`);
     }
     let users = await User.find({});
-    // .skip(value.pageSize * value.pageNumber)
-    // .limit(value.pageSize);
 
     res.json({
         metadata: {

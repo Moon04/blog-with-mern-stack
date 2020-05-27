@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
 
     newUser.save((err, doc) => {
         if (err) {
-            return res.status(409).json(`‘ser with username: ${user.username} already exist`);
+            return res.status(409).json(`User with username: ${user.username} already exist`);
         }
         doc = doc.toJSON();
         delete doc.password;
