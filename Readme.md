@@ -1,2 +1,2 @@
-# blog-with-mern-stack
-blog using reactjs and nodejs
+# blog-reactjs
+blogging website using reactjs
