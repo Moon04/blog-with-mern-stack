@@ -10,7 +10,7 @@ class Blog extends Component {
     state={
         token: '',
         btnText: '',
-        blogAuthor: '',
+        blogAuthor: {},
         blogTags: [],
         profilePath: '/myprofile'
     };
@@ -41,7 +41,8 @@ class Blog extends Component {
           
         }
         else{
-            let author = this.props.authors.filter(auth => auth._id === this.props.blog.blogUserId)[0];
+            let author = this.props.authors.filter(auth => auth._id === this.props.blog.userId)[0];
+            console.log(this.props.authors);
             this.setState({blogAuthor: author});
         }
     
@@ -164,12 +165,12 @@ class Blog extends Component {
                         <div className="d-flex col-6 author">
                             {/* Author Avatar */}
                             <div className="author-img">
-                                <img src={this.state.blogAuthor?.avatar} className="img-thumbnail" alt="Author Avatar" />
+                                <img src={this.state.blogAuthor.avatar} className="img-thumbnail" alt="Author Avatar" />
                             </div>
                             {/* Author Username */}
                             <div className="author-name">
                                 <Link to={this.state.profilePath}> 
-                                    {this.state.blogAuthor?.username}
+                                    {this.state.blogAuthor.username}
                                 </Link>
                             </div>
                         </div>
