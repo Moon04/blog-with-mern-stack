@@ -188,10 +188,10 @@ class Blog extends Component {
                             {/* blog title */}
                             {this.props.blog.title} 
                         </h5>
-                        <pre className="card-text blog-body"> 
+                        <p className="card-text blog-body" style={{whiteSpace: "pre-wrap"}}> 
                             {/* blog body */}
                             {this.props.blog.body} 
-                        </pre>
+                        </p>
                         <div className="blog-tags">
                             {/* blog tags */}
                             {this.state.blogTags?.map(tag => 
