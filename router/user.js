@@ -84,7 +84,7 @@ router.get('/info', async (req, res) => {
     }
     let user = await User.find({
         _id: res.req.user._id
-    }).populate('followers', 'username', 'User');
+    });
 
     if(!user) {
         return res.status(404).json('no such user');
@@ -99,7 +99,7 @@ router.get('/info/:id', async (req, res) => {
     }
     let user = await User.find({
         _id: req.params.id
-    }).populate('followers', 'username', 'User');
+    });
 
     if(!user) {
         return res.status(404).json('no such user');
