@@ -1,7 +1,0 @@
-node_modules
-
-.env
-
-# ignore sub-directories
-public/blog-upload/**
-!public/blog-upload/.gitkeep
