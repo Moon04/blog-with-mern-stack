@@ -123,6 +123,7 @@ class BlogForm extends Component {
         { headers: {"Authorization" : `${this.state.token}`} })
         .then(res => {
 
+           if (imgFile) {
             blogId = res.data.data._id;
     
             imgFormData.set('postId', blogId);
@@ -132,9 +133,13 @@ class BlogForm extends Component {
             { headers: {'Authorization' : `${this.state.token}`} })
             .then(res => {
                 this.props.onBlogAdd(res.data.data);
+                return;
             }).catch(err=>{
                 toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
             });
+           }
+           this.props.onBlogAdd(res.data.data);
+
         }).catch(err => {
             if (err.response.status === 422) {
                 toast(err.response.data, {type: "error", position: "top-left"})
@@ -165,11 +170,13 @@ class BlogForm extends Component {
                     imgFormData,
                 { headers: {'Authorization' : `${this.state.token}`} })
                 .then(res => {
-                    this.props.onBlogAdd(res.data.data);
+                    this.props.onBlogUpdate(res.data.data);
+                    return
                 }).catch(err=>{
                     toast("Connection Error, Upload Image Again", {type: "error", position: "top-left"})
                 });
             }
+            this.props.onBlogUpdate(res.data.data);
         }).catch(err => {
             if (err.response.status === 422) {
                 toast(err.response.data, {type: "error", position: "top-left"})
@@ -200,8 +207,6 @@ class BlogForm extends Component {
         if (this.props.formType === "Add") {
             //CallBackEnd
             this.addNewBlog({title, body, imgFile, tagsArr});
-            //State
-            this.props.onBlogAdd(this.state.blog);
         } 
         
         //edit
@@ -209,8 +214,6 @@ class BlogForm extends Component {
             //Call BackEnd
             let id = _id;
             this.editBlog({id, title, body, imgFile, tagsArr});
-            //State
-            this.props.onBlogUpdate(this.state.blog);
         }
 
         if(this.props.modal)
@@ -304,7 +307,7 @@ class BlogForm extends Component {
                                         Upload Photo
                                     </label>
                                     <input type="file" className="form-control-file" 
-                                        name="imgFile" id="imgFile" required={true}
+                                        name="imgFile" id="imgFile"
                                         onChange={this.handleChange} 
                                     />
                                 </div>                                       

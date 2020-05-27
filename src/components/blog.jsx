@@ -157,7 +157,9 @@ class Blog extends Component {
                         </div>
                     }
                     {/* blog image */}
+                    {this.props.blog.img &&
                     <img src={this.props.blog.img} className="card-img-top" alt="Blog" />
+                    }
                     <div className="row author-area">
                         <div className="d-flex col-6 author">
                             {/* Author Avatar */}
@@ -185,10 +187,10 @@ class Blog extends Component {
                             {/* blog title */}
                             {this.props.blog.title} 
                         </h5>
-                        <p className="card-text blog-body"> 
+                        <pre className="card-text blog-body"> 
                             {/* blog body */}
                             {this.props.blog.body} 
-                        </p>
+                        </pre>
                         <div className="blog-tags">
                             {/* blog tags */}
                             {this.state.blogTags?.map(tag => 
