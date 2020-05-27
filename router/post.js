@@ -39,7 +39,8 @@ router.post('/upload', async (req, res) => {
     let fileUrl = URL.parse(`${req.protocol}://${req.headers.host}/blog-upload/${postId}/img${ext}`).href;
     await post.updateOne({ img: fileUrl});
     Object.assign(post, { img: fileUrl });
-    res.json({data: post});
+    let postUpdated = await Post.findById(req.body.postId);
+    res.json({data: postUpdated});
 });
 
 //search by title
@@ -125,7 +126,8 @@ router.put('/:id', async (req, res) => {
     }
     await post.updateOne(value);
     Object.assign({ ...post }, value);
-    res.json({data: post});
+    let updated = await Post.findById(req.params.id);
+    res.json({data: updated});
 });
 
 //delete post
