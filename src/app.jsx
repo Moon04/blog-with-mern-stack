@@ -31,7 +31,7 @@ class App extends React.Component {
         {
             this.setState({token})
         }
-        const { data: authorsData } = await axios.get("http://localhost:3000/basicdata/users");
+        const { data: authorsData } = await axios.get(process.env.REACT_APP_BACKEND_URL+"/basicdata/users");
         await this.setState({ authors: authorsData.data });
         
         this.getAuthorsBlogs();
@@ -48,7 +48,7 @@ class App extends React.Component {
         
     //get authors from backend
     getAuthorsBlogs = async () =>{
-        const { data: blogsData } = await axios.get(`http://localhost:3000/basicdata/posts?pageNumber=${this.state.activePage-1}`);
+        const { data: blogsData } = await axios.get(process.env.REACT_APP_BACKEND_URL+`/basicdata/posts?pageNumber=${this.state.activePage-1}`);
         await this.setState({ blogs: blogsData.data});
         await this.setState({ blogsMetadata: blogsData.metadata });
     };
@@ -67,7 +67,7 @@ class App extends React.Component {
     handleSearchBtn = async term =>{
         if(term)
         {
-            const { data: blogsData } = await axios.get(`http://localhost:3000/post/search/"${term}"?pageNumber=${this.state.activePage-1}`,
+            const { data: blogsData } = await axios.get(process.env.REACT_APP_BACKEND_URL+`/post/search/"${term}"?pageNumber=${this.state.activePage-1}`,
             { headers: {"Authorization" : `${this.state.token}`} });
             await this.setState({ blogs: blogsData.data});
             await this.setState({ blogsMetadata: blogsData.metadata });

@@ -17,7 +17,7 @@ class AuthorSubNav extends Component {
         const token = getFromStorage('user_token');
         if (token) {
             try {
-                const {data} = await axios.get("http://localhost:3000/user/info", 
+                const {data} = await axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info", 
                 { headers: {"Authorization" : `${token}`} });
 
                 this.setState({author: data.data[0]})

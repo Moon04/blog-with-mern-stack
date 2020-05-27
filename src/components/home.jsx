@@ -24,7 +24,7 @@ class Home extends Component {
     const token = getFromStorage('user_token');
     if (token) 
     {
-      const {data} = await axios.get("http://localhost:3000/user/info", 
+      const {data} = await axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info", 
       { headers: {"Authorization" : `${token}`} });
 
       this.setState({token});
@@ -61,7 +61,7 @@ class Home extends Component {
     try {
       //Call BackEnd
       const { data } = await axios.delete(
-        `http://localhost:3000/post/${blog._id}`,
+        process.env.REACT_APP_BACKEND_URL+`/post/${blog._id}`,
         { headers: {"Authorization" : `${this.state.token}`} });
 
         //State

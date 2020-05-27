@@ -26,7 +26,7 @@ class Blog extends Component {
                 blogUserId = this.props.blog.userId._id;
             }
 
-            const {data} = await axios.get("http://localhost:3000/user/info/"+blogUserId, 
+            const {data} = await axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info/"+blogUserId, 
             { headers: {"Authorization" : `${token}`} });
 
             this.setState({token});
@@ -71,7 +71,7 @@ class Blog extends Component {
             userId = author._id;
 
             axios.post(
-                'http://localhost:3000/user/follow', 
+                process.env.REACT_APP_BACKEND_URL+'/user/follow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
             ).then(res=>{
@@ -107,7 +107,7 @@ class Blog extends Component {
             userId = author._id;
 
             axios.post(
-                'http://localhost:3000/user/unfollow', 
+                process.env.REACT_APP_BACKEND_URL+'/user/unfollow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
             ).then(res => {
@@ -147,7 +147,7 @@ class Blog extends Component {
                     {this.state.token && this.props.currentAuthor?._id === this.state.blogAuthor?._id &&
                         <div className="blog-crud">
                             {/* edit blog btn */}
-                            <a title="Edit blog" onClick={()=>this.props.handleFormType(this.props.blog._id)}>
+                            <a  title="Edit blog" onClick={()=>this.props.handleFormType(this.props.blog._id)}>
                                 <i className="fas fa-edit"></i>
                             </a>
                             {/* delete blog btn */}

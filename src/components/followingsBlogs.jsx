@@ -23,7 +23,7 @@ class FollowingsBlogs extends Component {
             this.setState({token});
 
            try {
-            const {data: currentAuthor} = await axios.get("http://localhost:3000/user/info", 
+            const {data: currentAuthor} = await axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info", 
             { headers: {"Authorization" : `${token}`} });
 
             this.setState({currentAuthor: currentAuthor.data[0]});
@@ -49,7 +49,7 @@ class FollowingsBlogs extends Component {
 
     //get followings blogs from backend
     getFollowingBlogs = async () =>{
-        const {data: blogs} = await axios.get(`http://localhost:3000/post/followingsposts?pageNumber=${this.state.activePage-1}`, 
+        const {data: blogs} = await axios.get(process.env.REACT_APP_BACKEND_URL+`/post/followingsposts?pageNumber=${this.state.activePage-1}`, 
         { headers: {"Authorization" : `${this.state.token}`} });
         this.setState({blogs: blogs.data});
         this.setState({blogsMetadata: blogs.metadata});

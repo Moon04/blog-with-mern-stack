@@ -40,7 +40,7 @@ class BlogForm extends Component {
             const id = this.props.formType;
     
             if (id !== "Add") {
-                const { data: blogData } = await axios.get("http://localhost:3000/post/" + id,
+                const { data: blogData } = await axios.get(process.env.REACT_APP_BACKEND_URL+"/post/" + id,
                 { headers: {"Authorization" : `${token}`} });
 
                 let tags = [];
@@ -114,7 +114,7 @@ class BlogForm extends Component {
         let blogId = null;
         let imgFormData = new FormData();
 
-        axios.post('http://localhost:3000/post', 
+        axios.post(process.env.REACT_APP_BACKEND_URL+'/post', 
         {
             title,
             body,
@@ -127,7 +127,7 @@ class BlogForm extends Component {
     
             imgFormData.set('postId', blogId);
             imgFormData.append('userFile', imgFile);
-            const {data: img} = axios.post('http://localhost:3000/post/upload', 
+            const {data: img} = axios.post(process.env.REACT_APP_BACKEND_URL+'/post/upload', 
                 imgFormData,
             { headers: {'Authorization' : `${this.state.token}`} })
             .then(res => {
@@ -149,7 +149,7 @@ class BlogForm extends Component {
 
         let imgFormData = new FormData();
 
-        axios.put('http://localhost:3000/post/'+id, 
+        axios.put(process.env.REACT_APP_BACKEND_URL+'/post/'+id, 
         {
             title,
             body,
@@ -161,7 +161,7 @@ class BlogForm extends Component {
             {
                 imgFormData.set('postId', id);
                 imgFormData.append('userFile', imgFile);
-                const {data: img} = axios.post('http://localhost:3000/post/upload', 
+                const {data: img} = axios.post(process.env.REACT_APP_BACKEND_URL+'/post/upload', 
                     imgFormData,
                 { headers: {'Authorization' : `${this.state.token}`} })
                 .then(res => {

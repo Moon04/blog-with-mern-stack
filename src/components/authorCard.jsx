@@ -16,7 +16,7 @@ class AuthorCard extends Component {
 
     //get author profile data
     getAuthorProfile= token =>{
-        axios.get("http://localhost:3000/user/info/"+this.props.author, 
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info/"+this.props.author, 
         { headers: {"Authorization" : `${token}`} })
         .then(res=>{
             this.setState({author: res.data.data[0]});
@@ -56,7 +56,7 @@ class AuthorCard extends Component {
             const author = this.props.author;
             userId = author;
             axios.post(
-                'http://localhost:3000/user/follow', 
+                process.env.REACT_APP_BACKEND_URL+'/user/follow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
                 ).then(res=>{
@@ -86,7 +86,7 @@ class AuthorCard extends Component {
             userId = author;
 
             axios.post(
-            'http://localhost:3000/user/unfollow', 
+            process.env.env.REACT_APP_BACKEND_URL+'/user/unfollow', 
             { userId },
             { headers: {"Authorization" : `${this.state.token}`} }
             ).then(res=>{
@@ -110,6 +110,7 @@ class AuthorCard extends Component {
     render(){
         return ( 
             <React.Fragment>
+                <ToastContainer/>
                 <li className="author-card d-flex">
                     <img src={this.state.author?.avatar} alt="Author Avatar"/>
                     <div className="ml-3">

@@ -33,7 +33,7 @@ class AuthorsList extends Component {
       }
 
     getAuthors= token =>{
-    axios.get("http://localhost:3000/user/info", 
+    axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info", 
     { headers: {"Authorization" : `${token}`} })
     .then(res=>{
 

@@ -43,7 +43,7 @@ class AuthorInfo extends Component {
             const author = this.props.author;
             userId = author._id;
             axios.post(
-                'http://localhost:3000/user/follow', 
+                process.env.REACT_APP_BACKEND_URL+'/user/follow', 
                 { userId },
                 { headers: {"Authorization" : `${this.state.token}`} }
                 ).then(res=>{
@@ -75,7 +75,7 @@ class AuthorInfo extends Component {
             userId = author._id;
 
             axios.post(
-            'http://localhost:3000/user/unfollow', 
+            process.env.REACT_APP_BACKEND_URL+'/user/unfollow', 
             { userId },
             { headers: {"Authorization" : `${this.state.token}`} }
             ).then(res=>{

@@ -59,7 +59,7 @@ class AuthorProfile extends Component {
 
   //get author blogs backend
   getAuthorBlogs = () =>{
-    axios.get("http://localhost:3000/post/userposts/"+this.state.author?._id+`?pageNumber=${this.state.activePage-1}`, 
+    axios.get(process.env.REACT_APP_BACKEND_URL+"/post/userposts/"+this.state.author?._id+`?pageNumber=${this.state.activePage-1}`, 
         { headers: {"Authorization" : `${this.state.token}`} })
         .then(res=>{
           this.setState({blogs: res.data.data});
@@ -71,7 +71,7 @@ class AuthorProfile extends Component {
 
   //get author data from backend
   getAuthorProfile = token =>{
-    axios.get("http://localhost:3000/user/info", 
+    axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info", 
     { headers: {"Authorization" : `${token}`} })
     .then(res=>{
       this.setState({currentAuthor: res.data.data[0]});
@@ -83,7 +83,7 @@ class AuthorProfile extends Component {
       }
       else
       {
-        axios.get("http://localhost:3000/user/info/"+this.props.match.params.id, 
+        axios.get(process.env.REACT_APP_BACKEND_URL+"/user/info/"+this.props.match.params.id, 
         { headers: {"Authorization" : `${token}`} })
         .then(res=>{
           this.setState({author: res.data.data[0]});
@@ -128,7 +128,7 @@ class AuthorProfile extends Component {
     try {
       //Call BackEnd
       const { data } = await axios.delete(
-        `http://localhost:3000/post/${blog._id}`,
+        process.env.REACT_APP_BACKEND_URL+`/post/${blog._id}`,
         { headers: {"Authorization" : `${this.state.token}`} });
 
         this.setState({blogDeleted: !this.state.blogDeleted});
